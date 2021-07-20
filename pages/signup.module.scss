@@ -1,0 +1,44 @@
+@import '../styles/variables.scss';
+
+.layout{
+
+    .logo {
+      float: left;
+      width: 170px;
+      height: 64px;
+      background: rgba(255, 255, 255, 0.466);
+    }
+    
+    .box{
+      align-self: center;
+    .generi{
+      padding: 5px;
+      display: flex;
+      justify-content: center;
+      flex-direction:row;
+      div{
+        background-color: white;
+        border-radius: 20px;
+        padding: 8px;
+        margin: 5px 5px 10px 5px;
+        cursor:pointer;
+        &:hover {
+          background-color: $primary-color;
+        }
+      }
+    }
+    }
+    .active{
+      background-color: $primary-color !important;
+    }
+    
+     .content {
+        min-height: 280px;
+        padding: 24px;
+        background: #fff;
+      }
+      
+     /* .Accedi{
+          text-align: center;
+      }*/
+    }
