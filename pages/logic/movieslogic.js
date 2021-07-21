@@ -1,8 +1,7 @@
-import { Modal } from 'antd';
+import { Modal } from "antd";
 
-
-const MOVIES = 'movies';
-const ORDERS = 'orders';
+const MOVIES = "movies";
+const ORDERS = "orders";
 
 export const setMovies = (movies) => {
   localStorage.setItem(MOVIES, JSON.stringify(movies));
@@ -16,7 +15,7 @@ export const checkLocalMovies = () => {
     return true;
   } catch (error) {
     Modal.error({
-      title: 'ERRORE NEL LOCALSTORAGE',
+      title: "ERRORE NEL LOCALSTORAGE",
     });
   }
 };
@@ -29,13 +28,10 @@ export const checkLocalOrders = () => {
     return true;
   } catch (error) {
     Modal.error({
-      title: 'ERRORE NEL LOCALSTORAGE',
+      title: "ERRORE NEL LOCALSTORAGE",
     });
   }
 };
-
-
-
 
 export const getLocalMovies = () => {
   if (checkLocalMovies()) {
@@ -52,25 +48,18 @@ export const getBusinessMovies = (busName) => {
       movie.vendors[
         movie.vendors.findIndex((item) => item.businessName === busName)
       ];
-      if (find) {
-        return {
-          id: movie.id,
-          sellPrice: find.sellPrice,
-          rentPrice: find.rentPrice,
-        };
-      }
-    
+    if (find) {
+      return {
+        id: movie.id,
+        sellPrice: find.sellPrice,
+        rentPrice: find.rentPrice,
+      };
+    }
   });
   return businessMovies;
 };
 
-export const saveMovie = (
-  id,
-  busName,
-  sellPrice,
-  rentPrice,
-  setData,
-) => {
+export const saveMovie = (id, busName, sellPrice, rentPrice, setReload) => {
   let movies = getLocalMovies();
   const movieIndex = movies.findIndex((movie) => movie.id === id);
 
@@ -79,13 +68,14 @@ export const saveMovie = (
       id,
       vendors: [
         {
-          businessName: JSON.parse(localStorage.getItem("user")).info.businessName,
+          businessName: JSON.parse(localStorage.getItem("user")).info
+            .businessName,
           sellPrice,
           rentPrice,
         },
       ],
     });
-    setMovies(movies);
+    localStorage.setItem("movies", JSON.stringify(movies));
   } else if (
     movies[movieIndex].vendors.findIndex((x) => x.businessName === busName) ===
     -1
@@ -95,26 +85,26 @@ export const saveMovie = (
       sellPrice,
       rentPrice,
     });
-    setMovies(movies);
+    localStorage.setItem("movies", JSON.stringify(movies));
   } else {
     Modal.error({
-      title: 'Il film è già in vendita.',
+      title: "Il film è già in vendita.",
     });
   }
-  setData(getBusinessMovies(busName));
+  setReload(movies);
 };
 
 export const deleteLocalMovie = (id, busName, setData) => {
   let movies = getLocalMovies();
   const movieIndex = movies.findIndex((movie) => movie.id === id);
   const vendorIndex = movies[movieIndex].vendors.findIndex(
-    (x) => x.businessName === busName,
+    (x) => x.businessName === busName
   );
 
   const haveMovie = vendorIndex !== -1;
   if (!haveMovie) {
     Modal.error({
-      title: 'Non puoi eliminare il film perchè ancora non è in vendita',
+      title: "Non puoi eliminare il film perchè ancora non è in vendita",
     });
   } else {
     movies[movieIndex].vendors.splice(vendorIndex, 1);
@@ -136,7 +126,7 @@ export const getLocalOrders = (businessName) => {
   if (checkLocalOrders) {
     const orders = JSON.parse(localStorage.getItem(ORDERS));
     return orders[
-      orders.findIndex((vendor) => vendor.businessName === 'businessName')
+      orders.findIndex((vendor) => vendor.businessName === "businessName")
     ].orders;
   }
   return [];
@@ -152,7 +142,7 @@ export const addToCart = (
   title,
   type,
   businessName,
-  price,
+  price
 ) => {
   const tempCart = {
     id,
@@ -160,13 +150,12 @@ export const addToCart = (
     type,
     businessName,
     price,
-    createdAt: new Date()
+    createdAt: new Date(),
   };
   setCart((c) => [...c, tempCart]);
-
 };
 
-export const removeFromCart = (title,cart,setCart)=>{
+export const removeFromCart = (title, cart, setCart) => {
   var flag = true;
   setCart(
     cart.filter((item) => {
@@ -177,29 +166,35 @@ export const removeFromCart = (title,cart,setCart)=>{
       return item.title;
     })
   );
-  
-}
+};
 
 export const createOrder = (user, cart) => {
   console.log(user);
   console.log(user.info);
   console.log(user.info.email);
 
-  if (localStorage.getItem("orders") && JSON.parse(localStorage.getItem("orders")).length>0) {
-    const orders = JSON.parse(localStorage.getItem("orders"))
+  if (
+    localStorage.getItem("orders") &&
+    JSON.parse(localStorage.getItem("orders")).length > 0
+  ) {
+    const orders = JSON.parse(localStorage.getItem("orders"));
     orders.push({
-      user:user.info.email,
-      cart
-    })
-    localStorage.setItem("orders",JSON.stringify(orders))
-  }else{
-    localStorage.setItem("orders",JSON.stringify([{
-      user:user.info.email,
-      cart
-    }]))
-
+      user: user.info.email,
+      cart,
+    });
+    localStorage.setItem("orders", JSON.stringify(orders));
+  } else {
+    localStorage.setItem(
+      "orders",
+      JSON.stringify([
+        {
+          user: user.info.email,
+          cart,
+        },
+      ])
+    );
   }
-}
+};
 
 export const getOrders = () => {
   if (checkLocalOrders()) {
@@ -207,26 +202,26 @@ export const getOrders = () => {
   }
 
   return [];
-}
+};
 
 export const getOrdersByBusName = (busName) => {
-  const orders = getOrders()
-  const data = []
+  const orders = getOrders();
+  const data = [];
   for (let i = 0; i < orders.length; i++) {
     const order = orders[i];
     for (let j = 0; j < order.cart.length; j++) {
       const item = order.cart[j];
-      if (item.businessName===busName) {
+      if (item.businessName === busName) {
         data.push({
-           user:order.user,
-           id:item.id,
-           title:item.title,
-           type:item.type,
-           price:item.price,
-           createdAt:item.createdAt
-        })
+          user: order.user,
+          id: item.id,
+          title: item.title,
+          type: item.type,
+          price: item.price,
+          createdAt: item.createdAt,
+        });
       }
     }
   }
   return data;
-}
+};

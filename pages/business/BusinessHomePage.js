@@ -1,5 +1,4 @@
 import {
-  Card,
   Input,
   Layout,
   Menu,
@@ -9,9 +8,9 @@ import {
   Table,
   Popconfirm,
   Rate,
-  Space,
+  message,
 } from "antd";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import styles from "../user/userhomepage.module.scss";
 import Image from "next/image";
 import { SaveOutlined, UserOutlined, DeleteOutlined } from "@ant-design/icons";
@@ -25,7 +24,6 @@ import genres from "../logic/utilities";
 import { getBusinessMovies, saveMovie } from "../logic/movieslogic";
 
 const { Option } = Select;
-const { Meta } = Card;
 const { Header, Content } = Layout;
 
 export default function BusinessHomePage() {
@@ -37,23 +35,29 @@ export default function BusinessHomePage() {
   const [sellPrice, setSell] = useState();
   const [movies, setMovies] = useState([]);
 
+  const formRef = useRef();
+
+  const populateMovie = async (u) => {
+    const ids = getBusinessMovies(u.info.businessName);
+    const m = [];
+    for (const id in ids) {
+      const movie = await getMovieInfo(ids[id].id);
+      const final = {
+        ...movie,
+        rentPrice: ids[id].rentPrice,
+        sellPrice: ids[id].sellPrice,
+      };
+      m.push(final);
+    }
+    return m;
+  };
+
   useEffect(async () => {
     const localUser = localStorage.getItem("user");
     if (localUser) {
       const u = JSON.parse(localStorage.getItem("user"));
       setUser(u);
-      const ids = getBusinessMovies(u.info.businessName);
-      const m = [];
-      for (const id in ids) {
-        const movie = await getMovieInfo(ids[id].id);
-        const final = {
-          ...movie,
-          rentPrice: ids[id].rentPrice,
-          sellPrice: ids[id].sellPrice,
-        };
-        m.push(final);
-      }
-      setMovies(m);
+      setMovies(await populateMovie(u));
     } else {
       window.location.href = "/login";
     }
@@ -77,15 +81,12 @@ export default function BusinessHomePage() {
     }
     // for (var i = 0; i < myArray.length; i++) {
     //   if (String(myArray[i].title) === String(nameKey) && stato === 1) {
-    //     console.log(myArray[i]);
     //     return myArray[i];
     //   }
     //   if (String(myArray[i].title) === String(nameKey)  && stato === 2) {
-    //     console.log(myArray[i]);
     //     return myArray[i].title;
     //   }
     //   if (String(myArray[i].title) === String(nameKey)  && stato === 3) {
-    //     console.log(myArray[i]);
     //     return myArray[i].genre;
     //   }
     // }
@@ -97,29 +98,47 @@ export default function BusinessHomePage() {
       : [];
 
     const movie = totalmovies.filter((m) => m.id === id)[0];
-    console.log(movie)
     if (movie.vendors.length > 1) {
-      const index = totalmovies.findIndex(m => m.id === id )
-     const finalvendors = movie.vendors.filter(
+      const index = totalmovies.findIndex((m) => m.id === id);
+      const finalvendors = movie.vendors.filter(
         (item) => item.businessName !== user.info.businessName
       );
-      totalmovies[index].vendors=finalvendors
-      localStorage.setItem("movies",JSON.stringify(totalmovies))
-      setTimeout(() => {
-        setReload(!reload)
-        setMovies(totalmovies)
-
-      }, 500);
-
+      totalmovies[index].vendors = finalvendors;
+      localStorage.setItem("movies", JSON.stringify(totalmovies));
     }
     localStorage.setItem(
       "movies",
       JSON.stringify(totalmovies.filter((item) => item.id !== id))
     );
+    setReload((prev) => !prev);
   }
 
-  const dataSource = [];
-
+  function modifica(id) {
+    let totalmovies = localStorage.getItem("movies")
+      ? JSON.parse(localStorage.getItem("movies"))
+      : [];
+    const movie = totalmovies.filter((m) => m.id === id)[0];
+    if (movie.vendors.length > 1) {
+      const index = totalmovies.findIndex((m) => m.id === id);
+      const vendor = totalmovies[index].vendors.findIndex(
+        (v) => v.businessName === user.info.businessName
+      );
+      totalmovies[index].vendors[vendor].sellPrice = sellPrice;
+      totalmovies[index].vendors[vendor].rentPrice = rentPrice;
+      message.success("Film modificato correttamente");
+    } else {
+      const index = totalmovies.findIndex((m) => m.id === id);
+      sellPrice
+        ? (totalmovies[index].vendors[0].sellPrice = sellPrice)
+        : totalmovies[index].vendors[0].sellPrice;
+      rentPrice
+        ? (totalmovies[index].vendors[0].rentPrice = rentPrice)
+        : totalmovies[index].vendors[0].rentPrice;
+      localStorage.setItem("movies", JSON.stringify(totalmovies));
+      setReload((prev) => !prev);
+      message.success("Film modificato correttamente");
+    }
+  }
   const columns = [
     {
       title: "Film",
@@ -132,9 +151,11 @@ export default function BusinessHomePage() {
       dataIndex: "sellPrice",
       key: "sellPrice",
       render: (text) => (
-        <a>
-          <Input value={text} style={{ width: "35%" }} />
-        </a>
+        <Input
+          defaultValue={text}
+          style={{ width: "35%" }}
+          onChange={(e) => setSell(e.target.value)}
+        />
       ),
     },
     {
@@ -142,15 +163,17 @@ export default function BusinessHomePage() {
       dataIndex: "rentPrice",
       key: "rentPrice",
       render: (text) => (
-        <a>
-          <Input value={text} style={{ width: "35%" }} />
-        </a>
+        <Input
+          defaultValue={text}
+          style={{ width: "35%" }}
+          onChange={(e) => setRent(e.target.value)}
+        />
       ),
     },
     {
       title: "Elimina",
-      dataIndex: 'id',
-      key: 'id',
+      dataIndex: "id",
+      key: "id",
       render: (id) => (
         <Popconfirm
           title="Vuoi eliminare questo film dal tuo catalogo？"
@@ -166,13 +189,13 @@ export default function BusinessHomePage() {
     },
     {
       title: "Modifica",
-      dataIndex: 'id',
-      key: 'id',
+      dataIndex: "id",
+      key: "id",
       render: (id) => (
         <Popconfirm
           title="Vuoi applicare le modifiche al tuo catalogo？"
           okText="Si"
-          onConfirm={() => mofica(id)}
+          onConfirm={() => modifica(id)}
           cancelText="No"
         >
           <a href="#">
@@ -208,7 +231,6 @@ export default function BusinessHomePage() {
 
         <Select
           onSelect={async (_, item) => {
-            console.log(item);
             const res = await getTopFourDirAct(item.value);
             const actors = res[0];
             const dir = [res[1]];
@@ -216,15 +238,9 @@ export default function BusinessHomePage() {
               maskClosable: true,
               closable: true,
               okText: "Aggiungi film",
-              onOk:()=> {
-                console.log(sellPrice);
-                ;saveMovie(
-                item.value,
-                user.info.businessName,
-                sellPrice,
-                rentPrice,
-                setData)}
-              ,
+              onOk: () => {
+                formRef.current.submit();
+              },
               title: item.filmTitle,
               icon: <></>,
               content: (
@@ -239,24 +255,28 @@ export default function BusinessHomePage() {
                         Generi:{" "}
                         {item.genre.map((genere) => genres[genere]).toString()}
                       </p>
-                      </>
-                      )}
-                      <>
-                      <Form.Item name="sellPrice" label="Prezzo di vendita">
-                        <Input
-                          onChange={(e) => setSell(e.target.value)}
-                          type="number"
-                        ></Input>
-                      </Form.Item>
-
-                      <Form.Item name="rentPrice" label="Prezzo di noleggio">
-                        <Input
-                          onChange={(e) => setRent(e.target.value)}
-                          type="number"
-                        ></Input>
-                      </Form.Item>
                     </>
-                  
+                  )}
+                  <Form
+                    ref={formRef}
+                    onFinish={(data) => {
+                      saveMovie(
+                        item.value,
+                        user.info.businessName,
+                        data.sellPrice,
+                        data.rentPrice,
+                        setReload
+                      );
+                    }}
+                  >
+                    <Form.Item name="sellPrice" label="Prezzo di vendita">
+                      <Input type="number"></Input>
+                    </Form.Item>
+
+                    <Form.Item name="rentPrice" label="Prezzo di noleggio">
+                      <Input type="number"></Input>
+                    </Form.Item>
+                  </Form>
                 </>
               ),
             });
@@ -300,14 +320,14 @@ export default function BusinessHomePage() {
           <Table
             className={styles.table}
             label="films"
-            dataSource={movies}
+            dataSource={[...movies]}
             columns={columns}
             size="middle"
           />
-        </div >
+        </div>
 
         <div className={styles.rating}>
-         <h3>Recensioni</h3>
+          <h3>Recensioni</h3>
           <Rate disabled defaultValue={3.5} /> (18)
         </div>
       </Content>
