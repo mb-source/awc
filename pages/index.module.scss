@@ -1,24 +1,37 @@
-.layout{
-
-.logo {
-  float: left;
-  width: 170px;
-  height: 64px;
-  background: rgba(255, 255, 255, 0.466);
-}
-
-
- .content {
-    min-height: 280px;
-    padding: 24px;
-    background: #fff;
+.layout {
+  .logo {
+    float: left;
+    width: 170px;
+    height: 64px;
+    background: rgba(255, 255, 255, 0.952);
   }
 
-  .footer{
-    background: #fff;
+  .content {
+    min-height: 300px;
+    padding: 50px;
+    background-color:white;
+    text-align: 'center';
+    margin: 60px
   }
-  
- /* .Accedi{
+
+  .logofooter {
+    float: left;
+    width: 190px;
+    height: 80px;
+    background: #bdbebd;
+    margin-left: 2px;
+    }
+
+  .footer {
+    background:  #bdbebd;
+    position: fixed;
+    padding: 30px;
+    left: 0;
+    bottom: 0;
+    width: 100%;
+  }
+
+  /* .Accedi{
       text-align: center;
   }*/
 }
