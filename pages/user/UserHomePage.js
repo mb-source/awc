@@ -68,6 +68,44 @@ export default function UserHomePage() {
             <Image src="/moviebook_clear.png" width="170" height="64" />
           </a>
         </div>
+
+        <Select
+          onSelect={async (_, item) => {
+            console.log(item);
+            const res = await getTopFourDirAct(item.value);
+            const actors = res[0];
+            const dir = [res[1]];
+            Modal.info({
+              title: item.filmTitle,
+              icon: <></>,
+              content: (
+                <>
+                  <img src={getPoster(item.poster, 200)} />
+                  <p className={styles.attori}>Attori: {actors}</p>
+                  <p>Registi: {dir}</p>
+                  <p>Data di uscita: {item.date}</p>
+                  {item.genre && item.genre.length > 0 && (
+                    <p>
+                      Generi:{" "}
+                      {item.genre.map((genere) => genres[genere]).toString()}
+                    </p>
+                  )}
+                </>
+              ),
+            });
+          }}
+          defaultActiveFirstOption={false}
+          filterOption={false}
+          showSearch
+          style={{ width: 200 }}
+          placeholder="Cerca..."
+          onSearch={(input) => {
+            search(input);
+          }}
+        >
+          {opt}
+        </Select>
+
         <Menu
           mode="horizontal"
           style={{ float: "right", marginRight: "-10px" }}
@@ -94,51 +132,21 @@ export default function UserHomePage() {
           </Menu.Item>
         </Menu>
       </Header>
-      <Content>
-        <Row gutter={{ xs: 8, sm: 16, md: 24, lg: 32 }}>
-          <Col className="gutter-row" span={6}>
-            <Select
-              onSelect={async (_, item) => {
-                console.log(item);
-                const res = await getTopFourDirAct(item.value);
-                const actors = res[0];
-                const dir = [res[1]];
-                Modal.info({
-                  title: item.filmTitle,
-                  icon: <></>,
-                  content: (
-                    <>
-                      <img src={getPoster(item.poster, 200)} />
-                      <p className={styles.attori}>Attori: {actors}</p>
-                      <p>Registi: {dir}</p>
-                      <p>Data di uscita: {item.date}</p>
-                      {item.genre && item.genre.length > 0 && (
-                        <p>
-                          Generi:{" "}
-                          {item.genre
-                            .map((genere) => genres[genere])
-                            .toString()}
-                        </p>
-                      )}
-                    </>
-                  ),
-                });
-              }}
-              defaultActiveFirstOption={false}
-              filterOption={false}
-              showSearch
-              style={{ width: 200 }}
-              placeholder="Cerca..."
-              onSearch={(input) => {
-                search(input);
-              }}
-            >
-              {opt}
-            </Select>
-          </Col>
-        </Row>
 
+      <Content className={styles.content}>
         
+        <Card
+          hoverable
+          style={{ width: 240 }}
+          cover={
+            <img
+              alt="example"
+              src="https://os.alipayobjects.com/rmsportal/QBnOOoLaAfKPirc.png"
+            />
+          }
+        >
+          <Meta title="Europe Street beat" description="www.instagram.com" />
+        </Card>
       </Content>
     </Layout>
   );

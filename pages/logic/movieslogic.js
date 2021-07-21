@@ -67,8 +67,8 @@ export const getBusinessMovies = (busName) => {
 export const saveMovie = (
   id,
   busName,
-  sellPrice = 0,
-  rentPrice = 0,
+  sellPrice,
+  rentPrice,
   setData,
 ) => {
   let movies = getLocalMovies();
