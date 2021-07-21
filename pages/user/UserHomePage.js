@@ -90,7 +90,7 @@ export default function UserHomePage() {
                       {item.genre.map((genere) => genres[genere]).toString()}
                     </p>
                   )}
-                </>
+                </>  
               ),
             });
           }}
@@ -134,19 +134,18 @@ export default function UserHomePage() {
       </Header>
 
       <Content className={styles.content}>
-        
+        <div className={styles.favgenre}>
+        <h3>Consigli basati sul tuo genere preferito</h3>
         <Card
           hoverable
           style={{ width: 240 }}
           cover={
-            <img
-              alt="example"
-              src="https://os.alipayobjects.com/rmsportal/QBnOOoLaAfKPirc.png"
-            />
+            <img  src={getPoster(item.poster, 200)}/>
           }
         >
           <Meta title="Europe Street beat" description="www.instagram.com" />
         </Card>
+        </div>
       </Content>
     </Layout>
   );
