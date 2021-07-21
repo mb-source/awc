@@ -135,15 +135,7 @@ export const getLocalOrders = (businessName) => {
 export const hasOrders = (businessName) =>
   getLocalOrders(businessName).length > 0;
 
-export const addToCart = (
-  cart,
-  setCart,
-  id,
-  title,
-  type,
-  businessName,
-  price
-) => {
+export const addToCart = (setCart, id, title, type, businessName, price) => {
   const tempCart = {
     id,
     title,

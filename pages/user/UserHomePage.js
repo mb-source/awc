@@ -1,10 +1,21 @@
-import { Card, Input, Row, Col, Layout, Menu, Select, Modal } from "antd";
+import {
+  Card,
+  Input,
+  Row,
+  Col,
+  Layout,
+  Menu,
+  Select,
+  Modal,
+  Button,
+} from "antd";
 import { useState } from "react";
 import styles from "./userhomepage.module.scss";
 import Image from "next/image";
 import { ShoppingOutlined, UserOutlined } from "@ant-design/icons";
 import { getMovieList, getTopFourDirAct, getPoster } from "../logic/Api";
 import genres from "../logic/utilities";
+import { addToCart, getMoviePrices } from "../logic/movieslogic";
 
 const { Option } = Select;
 const { Meta } = Card;
@@ -13,6 +24,7 @@ const { Header, Content } = Layout;
 export default function UserHomePage() {
   const [films, setfilm] = useState([]);
   const [show, setShow] = useState(false);
+  const [cart, setCart] = useState();
 
   async function search(nameKey) {
     if (nameKey.length > 0) {
@@ -46,6 +58,16 @@ export default function UserHomePage() {
     // }
   }
 
+  // function acquista(item) {
+  //   addToCart(item.value, item.title, 0, ,
+  //     price,)
+
+  // }
+
+  // function noleggia() {
+
+  // }
+
   const opt = films.map((item) => {
     return (
       <Option
@@ -71,7 +93,6 @@ export default function UserHomePage() {
 
         <Select
           onSelect={async (_, item) => {
-            console.log(item);
             const res = await getTopFourDirAct(item.value);
             const actors = res[0];
             const dir = [res[1]];
@@ -89,6 +110,38 @@ export default function UserHomePage() {
                       Generi:{" "}
                       {item.genre.map((genere) => genres[genere]).toString()}
                     </p>
+                  )}
+                  {getMoviePrices(item.value) && (
+                    <Row justify="space-between">
+                      <Col md={12}>
+                        <h3>Noleggia</h3>
+                      </Col>
+                      <Col md={12}>
+                        <h3>Acquista</h3>
+                      </Col>
+                    </Row>
+                  )}
+                  {getMoviePrices(item.value)[0] && (
+                    <div>
+                      <Select>
+                        {getMoviePrices(item.value)[0].vendors.map((vendor) => {
+                          return (
+                            <>
+                              <Option>{vendor.sellPrice}</Option>
+                            </>
+                          );
+                        })}
+                      </Select>
+                      <Select>
+                        {getMoviePrices(item.value)[0].vendors.map((vendor) => {
+                          return (
+                            <>
+                              <Option>{vendor.rentPrice}</Option>
+                            </>
+                          );
+                        })}
+                      </Select>
+                    </div>
                   )}
                 </>
               ),
@@ -134,7 +187,6 @@ export default function UserHomePage() {
       </Header>
 
       <Content className={styles.content}>
-        
         <Card
           hoverable
           style={{ width: 240 }}
