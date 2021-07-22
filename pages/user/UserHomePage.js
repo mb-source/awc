@@ -10,11 +10,16 @@ import {
   Button,
   message,
 } from "antd";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import styles from "./userhomepage.module.scss";
 import Image from "next/image";
 import { ShoppingOutlined, UserOutlined } from "@ant-design/icons";
-import { getMovieList, getTopFourDirAct, getPoster } from "../logic/Api";
+import {
+  getMovieList,
+  getTopFourDirAct,
+  getPoster,
+  getMoviesByGenre,
+} from "../logic/Api";
 import genres from "../logic/utilities";
 import { addToCart, getMoviePrices } from "../logic/movieslogic";
 
@@ -23,12 +28,29 @@ const { Meta } = Card;
 const { Header, Content } = Layout;
 
 export default function UserHomePage() {
+  const [user, setUser] = useState();
+  const [loading, setLoading] = useState(true);
   const [films, setfilm] = useState([]);
   const [show, setShow] = useState(false);
   const [cart, setCart] = useState();
   const [sellPrice, setSellPrice] = useState();
   const [rentPrice, setRentPrice] = useState();
   const [vendor, setVendor] = useState();
+  const [movies, setMovies] = useState([]);
+
+  useEffect(async () => {
+    const localUser = localStorage.getItem("user");
+    if (localUser) {
+      const u = JSON.parse(localStorage.getItem("user"));
+      setUser(u);
+      const res = await getMoviesByGenre(u.info.genere);
+      console.log(res.results);
+      setMovies(res.results);
+      setLoading(false);
+    } else {
+      window.location.href = "/login";
+    }
+  }, []);
 
   async function search(nameKey) {
     if (nameKey.length > 0) {
@@ -237,15 +259,32 @@ export default function UserHomePage() {
       </Header>
 
       <Content className={styles.content}>
-        <div>
-          {/* <Card
-            hoverable
-            style={{ width: 240 }}
-            cover={<img src={getPoster(item.poster, 200)} />}
-          >
-            <Meta title="Europe Street beat" description="www.instagram.com" />
-          </Card> */}
-        </div>
+        <h2>Dai tuoi generi preferiti</h2>
+
+        <Row>
+          {!loading &&
+            movies.map((movie) => {
+              return (
+                <Col md={8}>
+                  <Card
+                    hoverable
+                    style={{ width: 240 }}
+                    cover={
+                      <img
+                        alt="poster"
+                        src={getPoster(movie.poster_path, 200)}
+                      />
+                    }
+                  >
+                    <Meta
+                      title={movie.title}
+                      description={`${movie.overview.slice(0, 100)}...`}
+                    />
+                  </Card>
+                </Col>
+              );
+            })}
+        </Row>
       </Content>
     </Layout>
   );

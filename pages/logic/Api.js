@@ -1,9 +1,9 @@
-import { getLocalMovies } from './movieslogic';
-import { Modal } from 'antd';
+import { getLocalMovies } from "./movieslogic";
+import { Modal } from "antd";
 
-import axios from 'axios';
+import axios from "axios";
 
-const BASE_URL = 'https://api.themoviedb.org/3/';
+const BASE_URL = "https://api.themoviedb.org/3/";
 
 const getUrl = (endpoint) =>
   `${BASE_URL}${endpoint}?api_key=5635fd917d5aa60d99ecb1c7aaa6e603&language=it`;
@@ -14,13 +14,13 @@ const apiErrorHandler = (err) => {
 
 export const getMovieList = async (input) => {
   try {
-    const res = await axios({ 
-      method:"GET", 
+    const res = await axios({
+      method: "GET",
       url: getUrl("search/movie"),
       params: {
-        query: input
-      }
-    })
+        query: input,
+      },
+    });
     return res.data;
   } catch (error) {
     apiErrorHandler(error.response.data);
@@ -43,12 +43,12 @@ export const getMovieInfo = async (movie_id) => {
 };
 
 export const getGenresString = async (genres) => {
-  const allGenres = await axios.get(getUrl('genre/movie/list'));
+  const allGenres = await axios.get(getUrl("genre/movie/list"));
   const string = genres.map(
     (id) =>
       allGenres.data.genres[
         allGenres.data.genres.findIndex((el) => el.id === id)
-      ].name,
+      ].name
   );
   return string.toString();
 };
@@ -68,7 +68,7 @@ export const getTopFourDirAct = async (movie_id) => {
   });
 
   const sortedDirectors = crew
-    .filter((person) => person.job === 'Director')
+    .filter((person) => person.job === "Director")
     .sort((a, b) => {
       if (a.popularity < b.popularity) {
         return 1;
@@ -90,31 +90,13 @@ export const getTopFourDirAct = async (movie_id) => {
   ];
 };
 
-export const getMoviesByGenre = async () => {
-  const movies = getLocalMovies();
-  const moviesInfo = await Promise.all(
-    movies.map(async (movie) => await getMovieInfo(movie.id)),
-  );
-  const moviesByGenre = new Array();
-  return new Promise(async (resolve, reject) => {
-    try {
-      moviesInfo.map((movie) => {
-        movie.genres.map((genre) => {
-          if (moviesByGenre.findIndex((x) => x.genre === genre.name) === -1) {
-            moviesByGenre.push({
-              genre: genre.name,
-              movies: [movie],
-            });
-          } else {
-            moviesByGenre[
-              moviesByGenre.findIndex((x) => x.genre === genre.name)
-            ].movies.push(movie);
-          }
-        });
-      });
-      resolve(moviesByGenre);
-    } catch (error) {
-      console.log(error);
-    }
+export const getMoviesByGenre = async (id) => {
+  const res = await axios({
+    method: "GET",
+    url: getUrl("discover/movie"),
+    params: {
+      query: id,
+    },
   });
+  return res.data;
 };
