@@ -8,6 +8,9 @@ import {
   Modal,
   Button,
   message,
+  Steps,
+  Form,
+  Input,
 } from "antd";
 import { useState, useEffect } from "react";
 import styles from "./userhomepage.module.scss";
@@ -20,17 +23,24 @@ import {
   getMoviesByGenre,
 } from "../logic/Api";
 import genres from "../logic/utilities";
-import { getMoviePrices, createOrder } from "../logic/movieslogic";
+import {
+  getMoviePrices,
+  createOrder,
+  completeOrder,
+} from "../logic/movieslogic";
 
 const { Option } = Select;
 const { Meta } = Card;
 const { Header, Content } = Layout;
+const { Step } = Steps;
 
 export default function UserHomePage() {
   const [user, setUser] = useState();
   const [loading, setLoading] = useState(true);
   const [films, setfilm] = useState([]);
   const [movies, setMovies] = useState([]);
+  const [visible, setVisible] = useState(false);
+  const [current, setCurrent] = useState(0);
 
   useEffect(async () => {
     const localUser = localStorage.getItem("user");
@@ -44,6 +54,64 @@ export default function UserHomePage() {
       window.location.href = "/login";
     }
   }, []);
+
+  const next = () => {
+    setCurrent(current + 1);
+  };
+
+  const prev = () => {
+    setCurrent(current - 1);
+  };
+
+  const steps = [
+    {
+      title: "Carrello",
+      content: "First-content",
+    },
+    {
+      title: "Pagamento",
+      content: (
+        <Row>
+          {!loading && (
+            <Form
+              layout="vertical"
+              initialValues={{
+                carta: user.info.pagamento,
+                data: user.info.dataS,
+                cvs: user.info.cvs,
+                nominativo: user.info.nominativo,
+              }}
+            >
+              <Col>
+                <Form.Item label="Nominativo" name="nominativo">
+                  <Input></Input>
+                </Form.Item>
+              </Col>
+              <Col>
+                <Form.Item label="Data di scadenza" name="data">
+                  <Input></Input>
+                </Form.Item>
+              </Col>
+              <Col>
+                <Form.Item label="Numero della carta" name="carta">
+                  <Input></Input>
+                </Form.Item>
+              </Col>
+              <Col>
+                <Form.Item label="CVS" name="cvs">
+                  <Input></Input>
+                </Form.Item>
+              </Col>
+            </Form>
+          )}
+        </Row>
+      ),
+    },
+    {
+      title: "Completa ",
+      content: "",
+    },
+  ];
 
   async function search(nameKey) {
     if (nameKey.length > 0) {
@@ -68,6 +136,7 @@ export default function UserHomePage() {
       return message.error("Seleziona prima un negozio da cui acquistare");
     } else {
       createOrder(user.info.email, vendor, id, buy, 0);
+      setVisible(true);
     }
   }
 
@@ -76,7 +145,13 @@ export default function UserHomePage() {
       return message.error("Seleziona prima un negozio da cui noleggiare");
     } else {
       createOrder(user.info.email, vendor, id, rent, 1);
+      setVisible(true);
     }
+  }
+
+  function order() {
+    completeOrder();
+    message.success("Acquisto completato!");
   }
 
   const opt = films.map((item) => {
@@ -274,6 +349,34 @@ export default function UserHomePage() {
             })}
         </Row>
       </Content>
+      <Modal visible={visible}>
+        <div className={styles.content}>
+          <Steps current={current}>
+            {steps.map((item) => (
+              <Step key={item.title} title={item.title} />
+            ))}
+          </Steps>
+
+          <div className={styles.stepscontent}>{steps[current].content}</div>
+          <div className={styles.stepsaction}>
+            {current < steps.length - 1 && (
+              <Button type="primary" onClick={() => next()}>
+                Continua
+              </Button>
+            )}
+            {current === steps.length - 1 && (
+              <Button type="primary" onClick={() => order()}>
+                Acquista
+              </Button>
+            )}
+            {current > 0 && (
+              <Button style={{ margin: "0 8px" }} onClick={() => prev()}>
+                Indietro
+              </Button>
+            )}
+          </div>
+        </div>
+      </Modal>
     </Layout>
   );
 }

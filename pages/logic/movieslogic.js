@@ -150,8 +150,7 @@ export const createOrder = (user, businessName, movie, price, type) => {
               //Se il noleggio è terminato
               var date = new Date(Date.now());
               var final = { user, businessName, movie, price, type, date };
-              orders.push(final);
-              localStorage.setItem("orders", JSON.stringify(orders));
+              localStorage.setItem("cart", JSON.stringify([final]));
             } else {
               //Se il noleggio è ancora in corso
               Modal.error({
@@ -167,22 +166,34 @@ export const createOrder = (user, businessName, movie, price, type) => {
         } else {
           var date = new Date(Date.now());
           var final = { user, businessName, movie, price, type, date };
-          orders.push(final);
-          localStorage.setItem("orders", JSON.stringify(orders));
+          localStorage.setItem("cart", JSON.stringify([final]));
         }
       } else {
         //Se non ho ordini nessun problema
         var date = new Date(Date.now());
         var final = { user, businessName, movie, price, type, date };
-        orders.push(final);
-        localStorage.setItem("orders", JSON.stringify(orders));
+        localStorage.setItem("cart", JSON.stringify([final]));
       }
     });
   } else {
     //Se non ci sono ordini
     var date = new Date(Date.now());
     var final = { user, businessName, movie, price, type, date };
-    localStorage.setItem("orders", JSON.stringify([final]));
+    localStorage.setItem("cart", JSON.stringify([final]));
+  }
+};
+
+export const completeOrder = () => {
+  const cart = JSON.parse(localStorage.getItem("cart"));
+  const orders = JSON.parse(localStorage.getItem("orders"));
+
+  if (orders && orders.length > 0) {
+    orders.push(cart);
+    localStorage.setItem("orders", JSON.stringify(cart));
+    localStorage.removeItem("cart");
+  } else {
+    localStorage.setItem("orders", JSON.stringify([cart]));
+    localStorage.removeItem("cart");
   }
 };
 
