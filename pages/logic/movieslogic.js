@@ -122,14 +122,17 @@ export const getMoviePrices = (id) => {
   return getLocalMovies().filter((movie) => movie.id === id);
 };
 
-export const getLocalOrders = (businessName) => {
-  if (checkLocalOrders) {
-    const orders = JSON.parse(localStorage.getItem(ORDERS));
-    return orders[
-      orders.findIndex((vendor) => vendor.businessName === "businessName")
-    ].orders;
+export const getLocalOrders = (userEmail) => {
+  const orders = JSON.parse(localStorage.getItem(ORDERS));
+
+  if (orders && orders.length > 0) {
+    const final = orders.filter((order) => {
+      return order.user === userEmail;
+    });
+    return final;
+  } else {
+    return [];
   }
-  return [];
 };
 
 export const createOrder = (user, businessName, movie, price, type) => {
