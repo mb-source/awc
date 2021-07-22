@@ -51,7 +51,7 @@ export default function UserPage() {
               }}
             >
               <Col>
-                <Form.Item label="Nominativo" name="nominativo"></Form.Item>
+                <Form.Item label="Nominativo" name="nominativo" ><Input></Input></Form.Item>
               </Col>
               <Col>
                 <Form.Item label="Data" name="data"></Form.Item>
