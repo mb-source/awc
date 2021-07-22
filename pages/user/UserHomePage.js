@@ -8,12 +8,18 @@ import {
   Select,
   Modal,
   Button,
+  message,
 } from "antd";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import styles from "./userhomepage.module.scss";
 import Image from "next/image";
 import { ShoppingOutlined, UserOutlined } from "@ant-design/icons";
-import { getMovieList, getTopFourDirAct, getPoster } from "../logic/Api";
+import {
+  getMovieList,
+  getTopFourDirAct,
+  getPoster,
+  getMoviesByGenre,
+} from "../logic/Api";
 import genres from "../logic/utilities";
 import { addToCart, getMoviePrices } from "../logic/movieslogic";
 
@@ -22,9 +28,29 @@ const { Meta } = Card;
 const { Header, Content } = Layout;
 
 export default function UserHomePage() {
+  const [user, setUser] = useState();
+  const [loading, setLoading] = useState(true);
   const [films, setfilm] = useState([]);
   const [show, setShow] = useState(false);
   const [cart, setCart] = useState();
+  const [sellPrice, setSellPrice] = useState();
+  const [rentPrice, setRentPrice] = useState();
+  const [vendor, setVendor] = useState();
+  const [movies, setMovies] = useState([]);
+
+  useEffect(async () => {
+    const localUser = localStorage.getItem("user");
+    if (localUser) {
+      const u = JSON.parse(localStorage.getItem("user"));
+      setUser(u);
+      const res = await getMoviesByGenre(u.info.genere);
+      console.log(res.results);
+      setMovies(res.results);
+      setLoading(false);
+    } else {
+      window.location.href = "/login";
+    }
+  }, []);
 
   async function search(nameKey) {
     if (nameKey.length > 0) {
@@ -45,15 +71,26 @@ export default function UserHomePage() {
 
   }
 
-  // function acquista(item) {
-  //   addToCart(item.value, item.title, 0, ,
-  //     price,)
+  function buyMovie(id, title) {
+    console.log(sellPrice);
+    if (!sellPrice) {
+      return message.error("Seleziona prima un negozio da cui acquistare");
+    } else {
+      addToCart(setCart, id, title, 0, "Negozio", sellPrice);
+      setSellPrice(undefined);
+      console.log("Ok");
+    }
+  }
 
-  // }
-
-  // function noleggia() {
-
-  // }
+  function rentMovie(id, title) {
+    console.log(rentPrice);
+    if (!rentPrice) {
+      return message.error("Seleziona prima un negozio da cui noleggiare");
+    } else {
+      addToCart(setCart, id, title, 1, "Negozio", rentPrice);
+      setRentPrice(undefined);
+    }
+  }
 
   const opt = films.map((item) => {
     return (
@@ -101,33 +138,68 @@ export default function UserHomePage() {
                   {getMoviePrices(item.value) && (
                     <Row justify="space-between">
                       <Col md={12}>
-                        <h3>Noleggia</h3>
+                        <h3>Acquista</h3>
                       </Col>
                       <Col md={12}>
-                        <h3>Acquista</h3>
+                        <h3>Noleggia</h3>
                       </Col>
                     </Row>
                   )}
                   {getMoviePrices(item.value)[0] && (
                     <div>
-                      <Select>
-                        {getMoviePrices(item.value)[0].vendors.map((vendor) => {
-                          return (
-                            <>
-                              <Option>{vendor.sellPrice}</Option>
-                            </>
-                          );
-                        })}
-                      </Select>
-                      <Select>
-                        {getMoviePrices(item.value)[0].vendors.map((vendor) => {
-                          return (
-                            <>
-                              <Option>{vendor.rentPrice}</Option>
-                            </>
-                          );
-                        })}
-                      </Select>
+                      <Row justify="space-between">
+                        <Col md={12}>
+                          <Select
+                            style={{ width: 100 }}
+                            onChange={(value) => setSellPrice(value)}
+                          >
+                            {getMoviePrices(item.value)[0].vendors.map(
+                              (vendor) => {
+                                return (
+                                  <>
+                                    <Option value={vendor.sellPrice}>
+                                      {`${vendor.sellPrice} - ${vendor.businessName}`}
+                                    </Option>
+                                  </>
+                                );
+                              }
+                            )}
+                          </Select>
+                        </Col>
+
+                        <Col md={12}>
+                          <Select
+                            style={{ width: 100 }}
+                            onChange={(value) => setRentPrice(value)}
+                          >
+                            {getMoviePrices(item.value)[0].vendors.map(
+                              (vendor) => {
+                                return (
+                                  <>
+                                    <Option value={vendor.rentPrice}>
+                                      {`${vendor.rentPrice} - ${vendor.businessName}`}
+                                    </Option>
+                                  </>
+                                );
+                              }
+                            )}
+                          </Select>
+                        </Col>
+                        <Col md={24}>
+                          <Button
+                            type="primary"
+                            onClick={() => buyMovie(item.value, item.title)}
+                          >
+                            Acquista
+                          </Button>
+                          <Button
+                            type="primary"
+                            onClick={() => rentMovie(item.value, item.title)}
+                          >
+                            Noleggia per 72 ore
+                          </Button>
+                        </Col>
+                      </Row>
                     </div>
                   )}
                 </>
@@ -174,15 +246,32 @@ export default function UserHomePage() {
       </Header>
 
       <Content className={styles.content}>
-        <div>
-          {/* <Card
-            hoverable
-            style={{ width: 240 }}
-            cover={<img src={getPoster(item.poster, 200)} />}
-          >
-            <Meta title="Europe Street beat" description="www.instagram.com" />
-          </Card> */}
-        </div>
+        <h2>Dai tuoi generi preferiti</h2>
+
+        <Row>
+          {!loading &&
+            movies.map((movie) => {
+              return (
+                <Col md={8}>
+                  <Card
+                    hoverable
+                    style={{ width: 240 }}
+                    cover={
+                      <img
+                        alt="poster"
+                        src={getPoster(movie.poster_path, 200)}
+                      />
+                    }
+                  >
+                    <Meta
+                      title={movie.title}
+                      description={`${movie.overview.slice(0, 100)}...`}
+                    />
+                  </Card>
+                </Col>
+              );
+            })}
+        </Row>
       </Content>
     </Layout>
   );
