@@ -31,7 +31,7 @@ export default function login() {
         <Menu
           mode="horizontal"
           defaultSelectedKeys={["2"]}
-          style={{ float: "right", marginRight: "40px" }}
+          style={{ float: "right", marginRight: "-10px" }}
         >
           <Menu.Item key="1">
             <a href="/PREsignup">Registrati</a>

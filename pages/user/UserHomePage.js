@@ -21,11 +21,13 @@ import {
   getTopFourDirAct,
   getPoster,
   getMoviesByGenre,
+  getMovieInfo
 } from "../logic/Api";
 import genres from "../logic/utilities";
 import {
   getMoviePrices,
   createOrder,
+  getOrders,
   completeOrder,
 } from "../logic/movieslogic";
 
@@ -64,6 +66,7 @@ export default function UserHomePage() {
       setUser(u);
       const res = await getMoviesByGenre(u.info.genere);
       setMovies(res.results);
+      setOrders(await orderList(u))
       setLoading(false);
     } else {
       window.location.href = "/login";
@@ -112,6 +115,18 @@ export default function UserHomePage() {
     message.success("Acquisto completato!");
   }
 
+
+  const orderList = async(u) => {
+    const ids = getOrders();
+    const o = [];
+      const movie = await getMovieInfo(ids[movie]);
+      const final = {
+        ...movie,
+      };
+      o.push(final);
+    return o;
+  };
+  
 
   const opt = films.map((item) => {
     return (
@@ -270,11 +285,6 @@ export default function UserHomePage() {
             </a>
           </Menu.Item>
           <Menu.Item key="2">
-            <a href="/user/Shop">
-              <ShoppingOutlined />
-            </a>
-          </Menu.Item>
-          <Menu.Item key="3">
             <div
               onClick={() => {
                 window.localStorage.removeItem("user");

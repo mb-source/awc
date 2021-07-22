@@ -62,11 +62,6 @@ export default function UserPage() {
             </a>
           </Menu.Item>
           <Menu.Item key="2">
-            <a href="/user/Shop">
-              <ShoppingOutlined />
-            </a>
-          </Menu.Item>
-          <Menu.Item key="3">
             <div
               onClick={() => {
                 window.localStorage.removeItem("user");
@@ -86,6 +81,7 @@ export default function UserPage() {
         <>
           {!loading && (
             <Form
+            
               onFinish={(data) => {
                 let privateUser = localStorage.getItem("privateUser")
                   ? JSON.parse(localStorage.getItem("privateUser"))
