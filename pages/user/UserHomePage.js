@@ -63,19 +63,19 @@ export default function UserHomePage() {
     }
   }
 
-  function buyMovie(id, title, buy) {
+  function buyMovie(id, buy) {
     if (!buy) {
       return message.error("Seleziona prima un negozio da cui acquistare");
     } else {
       createOrder(user.info.email, "Negozio", id, buy, 0);
-      console.log("Ok");
     }
   }
 
-  function rentMovie(id, title, rent) {
+  function rentMovie(id, rent) {
     if (!rent) {
       return message.error("Seleziona prima un negozio da cui noleggiare");
     } else {
+      createOrder(user.info.email, "Negozio", id, rent, 1);
     }
   }
 
