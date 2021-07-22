@@ -1,5 +1,5 @@
 import { Layout, Menu, Col, Row,  } from 'antd';
-import { PhoneOutlined, MailOutlined } from '@ant-design/icons';
+import { PhoneOutlined, MailOutlined, TwitterOutlined } from '@ant-design/icons';
 
 
 import Image from "next/image"
@@ -33,7 +33,7 @@ export default function index(){
       <Col span={7}>
       <div className={styles.logofooter}> <Image src="/moviebook_clear.png" width="190" height="80"/></div>
       </Col>
-      <Col span={6}>Contattaci: <br/> <PhoneOutlined />356 6568 876 <br/> <MailOutlined /> themooviebook@gmail.com
+      <Col span={6}> <PhoneOutlined />356 6568 876 <br/> <MailOutlined /> themoviebook@gmail.com <br/> <TwitterOutlined /> @themoviebook 
       </Col>
     </Row>
     </div>

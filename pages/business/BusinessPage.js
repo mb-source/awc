@@ -43,7 +43,7 @@ export default function UserPage() {
           style={{ float: "right", marginRight: "-10px" }}
         >
           <Menu.Item key="1">
-            <a href="/BusinessHomePage">
+            <a href="/business/BusinessHomePage">
               <HomeOutlined />
             </a>
           </Menu.Item>
@@ -188,7 +188,7 @@ export default function UserPage() {
               </Form.Item>
 
 
-              <Button size="large" htmlType="submit">
+              <Button size="large" htmlType="submit" style={{margin: 10}}>
                 Modifica
               </Button>
               <Popconfirm
@@ -201,7 +201,7 @@ export default function UserPage() {
                   <Button
                     size="large"
                     htmlType="button"
-                    
+                    style={{margin: 10}}
                   >
                     Elimina
                   </Button>
