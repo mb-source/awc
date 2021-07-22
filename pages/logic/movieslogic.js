@@ -134,10 +134,8 @@ export const getLocalOrders = (businessName) => {
 
 export const createOrder = (user, businessName, movie, price, type) => {
   var currentDate = new Date(Date.now());
-  if (
-    localStorage.getItem("orders") &&
-    JSON.parse(localStorage.getItem("orders")).length > 0
-  ) {
+  if (localStorage.getItem("orders")) {
+    JSON.parse(localStorage.getItem("orders"));
     //Se ci sono degli ordini
     const orders = JSON.parse(localStorage.getItem("orders"));
     //Vedo gli ordini: controllo se ho già fatto un ordine per quel film e di che tipo
@@ -152,29 +150,34 @@ export const createOrder = (user, businessName, movie, price, type) => {
               //Se il noleggio è terminato
               var date = new Date(Date.now());
               var final = { user, businessName, movie, price, type, date };
-              localStorage.setItem("orders", JSON.stringify(final));
+              orders.push(final);
+              localStorage.setItem("orders", JSON.stringify(orders));
             } else {
               //Se il noleggio è ancora in corso
               console.log("Errore");
             }
+          } else if (order.type === 0) {
+            console.log("Errore");
           }
         } else {
           var date = new Date(Date.now());
           var final = { user, businessName, movie, price, type, date };
-          localStorage.setItem("orders", JSON.stringify(final));
+          orders.push(final);
+          localStorage.setItem("orders", JSON.stringify(orders));
         }
       } else {
         //Se non ho ordini nessun problema
         var date = new Date(Date.now());
         var final = { user, businessName, movie, price, type, date };
-        localStorage.setItem("orders", JSON.stringify(final));
+        orders.push(final);
+        localStorage.setItem("orders", JSON.stringify(orders));
       }
     });
   } else {
     //Se non ci sono ordini
     var date = new Date(Date.now());
     var final = { user, businessName, movie, price, type, date };
-    localStorage.setItem("orders", JSON.stringify(final));
+    localStorage.setItem("orders", JSON.stringify([final]));
   }
 };
 
