@@ -45,22 +45,22 @@ export default function UserPage() {
               layout="vertical"
               initialValues={{
                 carta: user.info.pagamento,
-                data: user.info.data,
+                data: user.info.dataS,
                 cvs: user.info.cvs,
                 nominativo: user.info.nominativo,
               }}
             >
               <Col>
-                <Form.Item label="Nominativo" name="nominativo" ><Input></Input></Form.Item>
+                <Form.Item label="Nominativo" name="nominativo" ><Input ></Input></Form.Item>
               </Col>
               <Col>
-                <Form.Item label="Data" name="data"></Form.Item>
+                <Form.Item label="Data di scadenza" name="data"><Input ></Input></Form.Item>
               </Col>
               <Col>
-                <Form.Item label="Carta" name="carta"></Form.Item>
+                <Form.Item label="Numero della carta" name="carta"><Input ></Input></Form.Item>
               </Col>
               <Col>
-                <Form.Item label="CVS" name="cvs"></Form.Item>
+                <Form.Item label="CVS" name="cvs"><Input ></Input></Form.Item>
               </Col>
             </Form>
           )}
@@ -68,7 +68,7 @@ export default function UserPage() {
       ),
     },
     {
-      title: "Completa L'acquisto",
+      title: "Completa ",
       content: ""
     },
   ];
