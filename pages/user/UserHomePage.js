@@ -167,6 +167,7 @@ export default function UserHomePage() {
       </Option>
     );
   });
+
   return (
     <Layout className={styles.layout}>
       <Header style={{ padding: "0 !important", backgroundColor: "white" }}>
@@ -185,6 +186,8 @@ export default function UserHomePage() {
             var buy;
             var vendor;
             Modal.info({
+              maskClosable: true,
+              closable: true,
               title: item.filmTitle,
               icon: <></>,
               content: (
@@ -259,20 +262,24 @@ export default function UserHomePage() {
                             )}
                           </Select>
                         </Col>
-                        <Col md={24}>
+                        <Col md={12}>
                           <Button
+                            style={{margin: 10}}
                             type="primary"
                             onClick={() => buyMovie(item.value, buy, vendor)}
                           >
                             Acquista
                           </Button>
+                          </Col>
+                          <Col md={12}>
                           <Button
+                          style={{margin: 8}}
                             type="primary"
                             onClick={() => {
                               rentMovie(item.value, rent, vendor);
                             }}
                           >
-                            Noleggia per 72 ore
+                            Noleggia 72h
                           </Button>
                         </Col>
                       </Row>
@@ -322,29 +329,30 @@ export default function UserHomePage() {
       </Header>
 
       <Content className={styles.content}>
-        <h2>Dai tuoi generi preferiti</h2>
+        <h2>Consigli basati sul tuo genere preferito...</h2>
 
         <Row>
           {!loading &&
             movies.map((movie) => {
               return (
-                <Col md={8}>
-                  <Card
-                    hoverable
-                    style={{ width: 240 }}
-                    cover={
-                      <img
-                        alt="poster"
-                        src={getPoster(movie.poster_path, 200)}
+                <Row span={2}>
+                  <Col justify="space-around" md={4}>
+                    <Card
+                      style={{ width: 240 }}
+                      cover={
+                        <img
+                          alt="poster"
+                          src={getPoster(movie.poster_path, 200)}
+                        />
+                      }
+                    >
+                      <Meta
+                        title={movie.title}
+                        description={`${movie.overview.slice(0, 100)}...`}
                       />
-                    }
-                  >
-                    <Meta
-                      title={movie.title}
-                      description={`${movie.overview.slice(0, 100)}...`}
-                    />
-                  </Card>
-                </Col>
+                    </Card>
+                  </Col>
+                </Row>
               );
             })}
         </Row>

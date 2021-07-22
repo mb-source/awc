@@ -43,7 +43,7 @@ export default function UserPage() {
           style={{ float: "right", marginRight: "-10px" }}
         >
           <Menu.Item key="1">
-            <a href="/BusinessHomePage">
+            <a href="/business/BusinessHomePage">
               <HomeOutlined />
             </a>
           </Menu.Item>
@@ -63,6 +63,7 @@ export default function UserPage() {
       <Content
         style={{ textAlign: "center", padding: "50px", marginTop: "60" }}
       >
+        <div className={styles.content}>
         <>
           {!loading && (
             <Form
@@ -103,6 +104,7 @@ export default function UserPage() {
                 vatNumber: user.info.vatNumber,
               }}
             >
+              <h3 style={{float: "left" }}>I tuoi dati personali</h3> <br/><br/>
               <Form.Item
                 label="Nome del Negozio"
                 name="businessName"
@@ -188,7 +190,7 @@ export default function UserPage() {
               </Form.Item>
 
 
-              <Button size="large" htmlType="submit">
+              <Button size="large" htmlType="submit" style={{margin: 10}}>
                 Modifica
               </Button>
               <Popconfirm
@@ -201,7 +203,7 @@ export default function UserPage() {
                   <Button
                     size="large"
                     htmlType="button"
-                    
+                    style={{margin: 10}}
                   >
                     Elimina
                   </Button>
@@ -210,6 +212,7 @@ export default function UserPage() {
             </Form>
           )}
         </>
+        </div>
       </Content>
     </Layout>
   );

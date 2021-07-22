@@ -1,4 +1,14 @@
-import { Card, Input, Row, Col, Button, Layout, Menu, Form, Popconfirm } from "antd";
+import {
+  Card,
+  Input,
+  Row,
+  Col,
+  Button,
+  Layout,
+  Menu,
+  Form,
+  Popconfirm,
+} from "antd";
 import { useEffect, useState } from "react";
 import styles from "./userhomepage.module.scss";
 import Image from "next/image";
@@ -10,13 +20,17 @@ export default function UserPage() {
   const [loading, setLoading] = useState(true);
   const [user, setUser] = useState();
 
-
   function elimina() {
     let privateUser = localStorage.getItem("privateUser")
       ? JSON.parse(localStorage.getItem("privateUser"))
       : [];
-    localStorage.setItem("privateUser", JSON.stringify(privateUser.filter(item => item.email !== user.info.email )) )
-    localStorage.removeItem("user")
+    localStorage.setItem(
+      "privateUser",
+      JSON.stringify(
+        privateUser.filter((item) => item.email !== user.info.email)
+      )
+    );
+    localStorage.removeItem("user");
     window.location.href = "/";
   }
 
@@ -28,7 +42,6 @@ export default function UserPage() {
     } else {
       window.location.href = "/login";
     }
-    
   }, []);
 
   return (
@@ -44,7 +57,7 @@ export default function UserPage() {
           style={{ float: "right", marginRight: "-10px" }}
         >
           <Menu.Item key="1">
-            <a href="/UserHomePage">
+            <a href="/user/UserHomePage">
               <HomeOutlined />
             </a>
           </Menu.Item>
@@ -69,6 +82,7 @@ export default function UserPage() {
       <Content
         style={{ textAlign: "center", padding: "50px", marginTop: "60" }}
       >
+        <div className={styles.content}>
         <>
           {!loading && (
             <Form
@@ -89,7 +103,7 @@ export default function UserPage() {
                       numero: data.numero,
                       data: data.data,
                       id: data.id,
-                      cvv: data.cvv
+                      cvv: data.cvv,
                     };
                   } else {
                     return item;
@@ -111,12 +125,13 @@ export default function UserPage() {
                 password: user.info.password,
                 telefono: user.info.telefono,
                 indirizzo: user.info.indirizzo,
-                numero: user.info.numero,
-                data: user.info.data,
-                id: user.info.id,
-                cvv: user.info.cvv
+                numero: user.info.pagamento,
+                data: user.info.dataS,
+                id: user.info.nominativo,
+                cvv: user.info.cvv,
               }}
             >
+              <h3 style={{float: "left" }}>I tuoi dati personali</h3> <br/><br/>
               <Form.Item
                 label="Nome"
                 name="nome"
@@ -196,42 +211,71 @@ export default function UserPage() {
               >
                 <Input style={{ width: "100%" }} />
               </Form.Item>
+              <br/><br/>
 
+              <h4 style={{float: "left" }}>Metodo di Pagamento</h4> <br/><br/>
+              <Form.Item
+                label="Numero della carta"
+                name="numero"
+                rules={[
+                  {
+                    required: true,
+                    message: "Inserisci un metodo di pagamento!",
+                  },
+                ]}
+              >
+                <Input />
+              </Form.Item>
+              <Form.Item
+                label="Data di scadenza"
+                name="data"
+                rules={[
+                  {
+                    required: true,
+                    message: "Inserisci un metodo di pagamento!",
+                  },
+                ]}
+              >
+                <Input type="date" />
+              </Form.Item>
 
-            <Form.Item
-            label="Metodo di Pagamento"
-            name="pagamento"
-            rules={[
-              {
-                required: true,
-                message: "Inserisci un metodo di pagamento!",
-              },
-            ]}
-          >
-            <Input id="numero" placeholder="Numero della carta" style={{ width: "60%" }}/>
-            <Input type="date" id="Data"  style={{ width: "30%" }} />
-            <Input id="id" placeholder="Nome e Cognome" style={{ width: "60%" }}/>
-            <Input id="cvv" placeholder="CVV" style={{ width: "30%" }} />
-            
-          </Form.Item>
+              <Form.Item
+                name="id"
+                label="Nome e Cognome"
+                rules={[
+                  {
+                    required: true,
+                    message: "Inserisci un metodo di pagamento!",
+                  },
+                ]}
+              >
+                <Input />
+              </Form.Item>
 
+              <Form.Item
+                name="cvv"
+                label="CVV"
+                rules={[
+                  {
+                    required: true,
+                    message: "Inserisci un metodo di pagamento!",
+                  },
+                ]}
+              >
+                <Input />
+              </Form.Item>
 
-
-              <Button size="large" htmlType="submit">
+              <Button size="large" htmlType="submit" style={{ margin: 10 }}>
                 Modifica
               </Button>
               <Popconfirm
                 title="Vuoi eliminare il tuo account？"
                 okText="Si"
-                onConfirm= {() => elimina()}
+                onConfirm={() => elimina()}
                 cancelText="No"
               >
                 <a href="#">
-                  <Button
-                    size="large"
-                    htmlType="button"
-                    
-                  >
+                  <Button size="large" htmlType="button" style={{ margin: 10 }}>
                     Elimina
                   </Button>
                 </a>
@@ -239,6 +283,7 @@ export default function UserPage() {
             </Form>
           )}
         </>
+        </div>
       </Content>
     </Layout>
   );

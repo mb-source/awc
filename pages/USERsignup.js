@@ -176,8 +176,8 @@ export const User = () => {
           </Form.Item>
 
           <Form.Item
-            label="CVS"
-            name="cvs"
+            label="CVV"
+            name="cvv"
             rules={[
               {
                 required: true,
@@ -194,7 +194,7 @@ export const User = () => {
 
           <Form.Item name="genere">
             <div className={styles.box}>
-              Seleziona il tuoo genere preferito:
+              Seleziona il tuo genere preferito:
               <div className={styles.generi}>
                 <div
                   className={stato === 27 && styles.active}
