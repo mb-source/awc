@@ -8,9 +8,9 @@ import {
   Modal,
   Button,
   message,
-  Steps,
   Form,
   Input,
+  Table
 } from "antd";
 import { useState, useEffect } from "react";
 import styles from "./userhomepage.module.scss";
@@ -32,7 +32,6 @@ import {
 const { Option } = Select;
 const { Meta } = Card;
 const { Header, Content } = Layout;
-const { Step } = Steps;
 
 export default function UserHomePage() {
   const [user, setUser] = useState();
@@ -40,7 +39,23 @@ export default function UserHomePage() {
   const [films, setfilm] = useState([]);
   const [movies, setMovies] = useState([]);
   const [visible, setVisible] = useState(false);
+  const[ModalVisible,setIsModalVisible] = useState(false);
   const [current, setCurrent] = useState(0);
+  const[orders, setOrders] = useState([])
+  const handleCancel = () => {
+    setIsModalVisible(false);
+  };
+
+  const columns = [
+    {
+      title: "Film",
+      dataIndex: "title",
+      key: "title",
+      render: (text) => <a>{text}</a>,
+    },
+  ]
+
+
 
   useEffect(async () => {
     const localUser = localStorage.getItem("user");
@@ -54,64 +69,7 @@ export default function UserHomePage() {
       window.location.href = "/login";
     }
   }, []);
-
-  const next = () => {
-    setCurrent(current + 1);
-  };
-
-  const prev = () => {
-    setCurrent(current - 1);
-  };
-
-  const steps = [
-    {
-      title: "Carrello",
-      content: "First-content",
-    },
-    {
-      title: "Pagamento",
-      content: (
-        <Row>
-          {!loading && (
-            <Form
-              layout="vertical"
-              initialValues={{
-                carta: user.info.pagamento,
-                data: user.info.dataS,
-                cvs: user.info.cvs,
-                nominativo: user.info.nominativo,
-              }}
-            >
-              <Col>
-                <Form.Item label="Nominativo" name="nominativo">
-                  <Input></Input>
-                </Form.Item>
-              </Col>
-              <Col>
-                <Form.Item label="Data di scadenza" name="data">
-                  <Input></Input>
-                </Form.Item>
-              </Col>
-              <Col>
-                <Form.Item label="Numero della carta" name="carta">
-                  <Input></Input>
-                </Form.Item>
-              </Col>
-              <Col>
-                <Form.Item label="CVS" name="cvs">
-                  <Input></Input>
-                </Form.Item>
-              </Col>
-            </Form>
-          )}
-        </Row>
-      ),
-    },
-    {
-      title: "Completa ",
-      content: "",
-    },
-  ];
+ 
 
   async function search(nameKey) {
     if (nameKey.length > 0) {
@@ -136,7 +94,7 @@ export default function UserHomePage() {
       return message.error("Seleziona prima un negozio da cui acquistare");
     } else {
       createOrder(user.info.email, vendor, id, buy, 0);
-      setVisible(true);
+      setIsModalVisible(true);
     }
   }
 
@@ -145,7 +103,7 @@ export default function UserHomePage() {
       return message.error("Seleziona prima un negozio da cui noleggiare");
     } else {
       createOrder(user.info.email, vendor, id, rent, 1);
-      setVisible(true);
+      setIsModalVisible(true);
     }
   }
 
@@ -153,6 +111,7 @@ export default function UserHomePage() {
     completeOrder();
     message.success("Acquisto completato!");
   }
+
 
   const opt = films.map((item) => {
     return (
@@ -329,8 +288,19 @@ export default function UserHomePage() {
       </Header>
 
       <Content className={styles.content}>
-        <h2>Consigli basati sul tuo genere preferito...</h2>
+      <div className={styles.div}>
+          <h3>I miei film</h3>
+          <Table
+            className={styles.table}
+            label="films"
+            dataSource={[...orders]}
+            columns={columns}
+            size="middle"
+          />
+        </div>
 
+
+        <h2>Consigli basati sul tuo genere preferito...</h2>
         <Row>
           {!loading &&
             movies.map((movie) => {
@@ -357,34 +327,54 @@ export default function UserHomePage() {
             })}
         </Row>
       </Content>
-      <Modal visible={visible}>
-        <div className={styles.content}>
-          <Steps current={current}>
-            {steps.map((item) => (
-              <Step key={item.title} title={item.title} />
-            ))}
-          </Steps>
 
-          <div className={styles.stepscontent}>{steps[current].content}</div>
-          <div className={styles.stepsaction}>
-            {current < steps.length - 1 && (
-              <Button type="primary" onClick={() => next()}>
-                Continua
-              </Button>
-            )}
-            {current === steps.length - 1 && (
-              <Button type="primary" onClick={() => order()}>
-                Acquista
-              </Button>
-            )}
-            {current > 0 && (
-              <Button style={{ margin: "0 8px" }} onClick={() => prev()}>
-                Indietro
-              </Button>
-            )}
-          </div>
+      <Modal visible={ModalVisible}
+      maskClosable={true}
+      closable={true}
+      okText="Acquista"
+      cancelText="Annulla"
+      onCancel={() => handleCancel()}
+      onOk={() => order()}>
+
+        <div className={styles.stepscontent}>
+          <Row>
+          {!loading && (
+            <Form
+              layout="vertical"
+              initialValues={{
+                carta: user.info.pagamento,
+                data: user.info.dataS,
+                cvv: user.info.cvv,
+                nominativo: user.info.nominativo,
+              }}
+            >
+              <h3> Modalità di pagamento </h3>
+              <Col>
+                <Form.Item label="Nominativo" name="nominativo">
+                  <Input></Input>
+                </Form.Item>
+              </Col>
+              <Col>
+                <Form.Item label="Data di scadenza" name="data">
+                  <Input></Input>
+                </Form.Item>
+              </Col>
+              <Col>
+                <Form.Item label="Numero della carta" name="carta">
+                  <Input></Input>
+                </Form.Item>
+              </Col>
+              <Col>
+                <Form.Item label="Cvv" name="cvv">
+                  <Input></Input>
+                </Form.Item>
+              </Col>
+            </Form>
+          )}
+         </Row>
         </div>
       </Modal>
     </Layout>
   );
 }
+

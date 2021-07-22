@@ -79,17 +79,6 @@ export default function BusinessHomePage() {
     } else {
       setfilm([]);
     }
-    // for (var i = 0; i < myArray.length; i++) {
-    //   if (String(myArray[i].title) === String(nameKey) && stato === 1) {
-    //     return myArray[i];
-    //   }
-    //   if (String(myArray[i].title) === String(nameKey)  && stato === 2) {
-    //     return myArray[i].title;
-    //   }
-    //   if (String(myArray[i].title) === String(nameKey)  && stato === 3) {
-    //     return myArray[i].genre;
-    //   }
-    // }
   }
 
   function elimina(id) {
