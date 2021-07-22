@@ -135,7 +135,7 @@ export const User = () => {
             ]}
           >
             <Input
-              id="numero"
+              id="pagamento"
               placeholder="Numero della carta"
               style={{ float: "left", width: "60%" }}
             />
@@ -153,7 +153,7 @@ export const User = () => {
           >
             <Input
               type="date"
-              id="data"
+              id="dataS"
               style={{ float: "left", width: "30%" }}
             />
           </Form.Item>
@@ -169,7 +169,7 @@ export const User = () => {
             ]}
           >
             <Input
-              id="id"
+              id="nominativo"
               placeholder="Nome e Cognome"
               style={{ float: "left", width: "60%" }}
             />

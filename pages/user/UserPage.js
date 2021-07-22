@@ -98,9 +98,9 @@ export default function UserPage() {
                         telefono: data.telefono,
                         indirizzo: data.indirizzo,
                         generi: item.generi,
-                        numero: data.numero,
-                        data: data.data,
-                        id: data.id,
+                        pagamento: data.pagamento,
+                        dataS: data.dataS,
+                        nominativo: data.nominativo,
                         cvv: data.cvv,
                       };
                     } else {
@@ -123,9 +123,9 @@ export default function UserPage() {
                   password: user.info.password,
                   telefono: user.info.telefono,
                   indirizzo: user.info.indirizzo,
-                  numero: user.info.numero,
-                  data: user.info.dataS,
-                  id: user.info.id,
+                  pagamento: user.info.pagamento,
+                  dataS: user.info.dataS,
+                  nominativo: user.info.nominativo,
                   cvv: user.info.cvv,
                 }}
               >
@@ -213,7 +213,7 @@ export default function UserPage() {
                 <br />
                 <Form.Item
                   label="Numero della carta"
-                  name="numero"
+                  name="pagamento"
                   rules={[
                     {
                       required: true,
@@ -225,7 +225,7 @@ export default function UserPage() {
                 </Form.Item>
                 <Form.Item
                   label="Data di scadenza"
-                  name="data"
+                  name="dataS"
                   rules={[
                     {
                       required: true,
@@ -236,7 +236,7 @@ export default function UserPage() {
                   <Input type="date" />
                 </Form.Item>
                 <Form.Item
-                  name="id"
+                  name="nominativo"
                   label="Nome e Cognome"
                   rules={[
                     {

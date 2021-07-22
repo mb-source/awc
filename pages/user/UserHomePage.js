@@ -360,31 +360,31 @@ export default function UserHomePage() {
               <Form
                 layout="vertical"
                 initialValues={{
-                  carta: user.info.number,
-                  data: user.info.data,
+                  carta: user.info.pagamento,
+                  data: user.info.dataS,
                   cvv: user.info.cvv,
-                  nominativo: user.info.id,
+                  nominativo: user.info.nominativo,
                 }}
               >
                 <h3> Modalità di pagamento </h3>
                 <Col>
-                  <Form.Item label="Nominativo" name="id">
-                    <Input></Input>
+                  <Form.Item label="Nominativo" name="nominativo">
+                    <Input disabled></Input>
                   </Form.Item>
                 </Col>
                 <Col>
                   <Form.Item label="Data di scadenza" name="data">
-                    <Input></Input>
+                    <Input disabled></Input>
                   </Form.Item>
                 </Col>
                 <Col>
-                  <Form.Item label="Numero della carta" name="numero">
-                    <Input></Input>
+                  <Form.Item label="Numero della carta" name="carta">
+                    <Input disabled></Input>
                   </Form.Item>
                 </Col>
                 <Col>
                   <Form.Item label="Cvv" name="cvv">
-                    <Input></Input>
+                    <Input disabled></Input>
                   </Form.Item>
                 </Col>
               </Form>
