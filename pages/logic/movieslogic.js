@@ -132,55 +132,49 @@ export const getLocalOrders = (businessName) => {
   return [];
 };
 
-export const hasOrders = (businessName) =>
-  getLocalOrders(businessName).length > 0;
-
-export const addToCart = (setCart, id, title, type, businessName, price) => {
-  const tempCart = {
-    id,
-    title,
-    type,
-    businessName,
-    price,
-    createdAt: new Date(),
-  };
-  setCart((c) => [...c, tempCart]);
-};
-
-export const removeFromCart = (title, cart, setCart) => {
-  var flag = true;
-  setCart(
-    cart.filter((item) => {
-      if (item.title === title && flag) {
-        flag = false;
-        return item.title !== title;
-      }
-      return item.title;
-    })
-  );
-};
-
-export const createOrder = (user, cart) => {
+export const createOrder = (user, businessName, movie, price, type) => {
+  var currentDate = new Date(Date.now());
   if (
     localStorage.getItem("orders") &&
     JSON.parse(localStorage.getItem("orders")).length > 0
   ) {
+    //Se ci sono degli ordini
     const orders = JSON.parse(localStorage.getItem("orders"));
-    orders.push({
-      user: user.info.email,
-      cart,
+    //Vedo gli ordini: controllo se ho già fatto un ordine per quel film e di che tipo
+    orders.forEach((order) => {
+      if (order.user === user) {
+        //Se io ho degli ordini
+        if (order.movie === movie) {
+          //Se ho già acquistato lo stesso film
+          if (order.type === 1) {
+            //Se si tratta di un noleggio
+            if (currentDate - order.date > 259200000) {
+              //Se il noleggio è terminato
+              var date = new Date(Date.now());
+              var final = { user, businessName, movie, price, type, date };
+              localStorage.setItem("orders", JSON.stringify(final));
+            } else {
+              //Se il noleggio è ancora in corso
+              console.log("Errore");
+            }
+          }
+        } else {
+          var date = new Date(Date.now());
+          var final = { user, businessName, movie, price, type, date };
+          localStorage.setItem("orders", JSON.stringify(final));
+        }
+      } else {
+        //Se non ho ordini nessun problema
+        var date = new Date(Date.now());
+        var final = { user, businessName, movie, price, type, date };
+        localStorage.setItem("orders", JSON.stringify(final));
+      }
     });
-    localStorage.setItem("orders", JSON.stringify(orders));
   } else {
-    localStorage.setItem(
-      "orders",
-      JSON.stringify([
-        {
-          user: user.info.email,
-          cart,
-        },
-      ])
-    );
+    //Se non ci sono ordini
+    var date = new Date(Date.now());
+    var final = { user, businessName, movie, price, type, date };
+    localStorage.setItem("orders", JSON.stringify(final));
   }
 };
 

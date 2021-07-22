@@ -21,7 +21,7 @@ import {
   getMoviesByGenre,
 } from "../logic/Api";
 import genres from "../logic/utilities";
-import { addToCart, getMoviePrices } from "../logic/movieslogic";
+import { getMoviePrices } from "../logic/movieslogic";
 
 const { Option } = Select;
 const { Meta } = Card;
@@ -32,10 +32,7 @@ export default function UserHomePage() {
   const [loading, setLoading] = useState(true);
   const [films, setfilm] = useState([]);
   const [show, setShow] = useState(false);
-  const [cart, setCart] = useState();
-  const [sellPrice, setSellPrice] = useState();
-  const [rentPrice, setRentPrice] = useState();
-  const [vendor, setVendor] = useState();
+  const [cart, setCart] = useState([]);
   const [movies, setMovies] = useState([]);
 
   useEffect(async () => {
@@ -44,7 +41,6 @@ export default function UserHomePage() {
       const u = JSON.parse(localStorage.getItem("user"));
       setUser(u);
       const res = await getMoviesByGenre(u.info.genere);
-      console.log(res.results);
       setMovies(res.results);
       setLoading(false);
     } else {
@@ -68,40 +64,19 @@ export default function UserHomePage() {
     } else {
       setfilm([]);
     }
-    // for (var i = 0; i < myArray.length; i++) {
-    //   if (String(myArray[i].title) === String(nameKey) && stato === 1) {
-    //     console.log(myArray[i]);
-    //     return myArray[i];
-    //   }
-    //   if (String(myArray[i].title) === String(nameKey)  && stato === 2) {
-    //     console.log(myArray[i]);
-    //     return myArray[i].title;
-    //   }
-    //   if (String(myArray[i].title) === String(nameKey)  && stato === 3) {
-    //     console.log(myArray[i]);
-    //     return myArray[i].genre;
-    //   }
-    // }
   }
 
-  function buyMovie(id, title) {
-    console.log(sellPrice);
-    if (!sellPrice) {
+  function buyMovie(id, title, buy) {
+    if (!buy) {
       return message.error("Seleziona prima un negozio da cui acquistare");
     } else {
-      addToCart(setCart, id, title, 0, "Negozio", sellPrice);
-      setSellPrice(undefined);
-      console.log("Ok");
     }
   }
 
-  function rentMovie(id, title) {
-    console.log(rentPrice);
-    if (!rentPrice) {
+  function rentMovie(id, title, rent) {
+    if (!rent) {
       return message.error("Seleziona prima un negozio da cui noleggiare");
     } else {
-      addToCart(setCart, id, title, 1, "Negozio", rentPrice);
-      setRentPrice(undefined);
     }
   }
 
@@ -118,7 +93,6 @@ export default function UserHomePage() {
       </Option>
     );
   });
-
   return (
     <Layout className={styles.layout}>
       <Header style={{ padding: "0 !important", backgroundColor: "white" }}>
@@ -133,6 +107,9 @@ export default function UserHomePage() {
             const res = await getTopFourDirAct(item.value);
             const actors = res[0];
             const dir = [res[1]];
+            var rent;
+            var buy;
+            var vendor;
             Modal.info({
               title: item.filmTitle,
               icon: <></>,
@@ -164,7 +141,11 @@ export default function UserHomePage() {
                         <Col md={12}>
                           <Select
                             style={{ width: 100 }}
-                            onChange={(value) => setSellPrice(value)}
+                            onSelect={(value) => {
+                              buy = value.split("-")[0];
+                              vendor = value.split("-")[1];
+                              console.log(value);
+                            }}
                           >
                             {getMoviePrices(item.value)[0].vendors.map(
                               (vendor) => {
@@ -183,13 +164,17 @@ export default function UserHomePage() {
                         <Col md={12}>
                           <Select
                             style={{ width: 100 }}
-                            onChange={(value) => setRentPrice(value)}
+                            onSelect={(value) => {
+                              rent = value;
+                            }}
                           >
                             {getMoviePrices(item.value)[0].vendors.map(
                               (vendor) => {
                                 return (
                                   <>
-                                    <Option value={vendor.rentPrice}>
+                                    <Option
+                                      value={`${vendor.rentPrice} - ${vendor.businessName}`}
+                                    >
                                       {`${vendor.rentPrice} - ${vendor.businessName}`}
                                     </Option>
                                   </>
@@ -201,13 +186,17 @@ export default function UserHomePage() {
                         <Col md={24}>
                           <Button
                             type="primary"
-                            onClick={() => buyMovie(item.value, item.title)}
+                            onClick={() =>
+                              buyMovie(item.value, item.title, buy)
+                            }
                           >
                             Acquista
                           </Button>
                           <Button
                             type="primary"
-                            onClick={() => rentMovie(item.value, item.title)}
+                            onClick={() =>
+                              rentMovie(item.value, item.title, rent)
+                            }
                           >
                             Noleggia per 72 ore
                           </Button>
