@@ -66,7 +66,7 @@ export default function UserHomePage() {
       setUser(u);
       const res = await getMoviesByGenre(u.info.genere);
       setMovies(res.results);
-      setOrders(await orderList(u))
+      //setOrders(await orderList(u))
       setLoading(false);
     } else {
       window.location.href = "/login";
@@ -116,16 +116,16 @@ export default function UserHomePage() {
   }
 
 
-  const orderList = async(u) => {
-    const ids = getOrders();
-    const o = [];
-      const movie = await getMovieInfo(ids[movie]);
-      const final = {
-        ...movie,
-      };
-      o.push(final);
-    return o;
-  };
+  // const orderList = async(u) => {
+  //   const ids = getOrders();
+  //   const o = [];
+  //     const movie = await getMovieInfo(ids[movie]);
+  //     const final = {
+  //       ...movie,
+  //     };
+  //     o.push(final);
+  //   return o;
+  // };
   
 
   const opt = films.map((item) => {
