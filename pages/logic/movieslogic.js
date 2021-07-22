@@ -161,10 +161,6 @@ export const removeFromCart = (title, cart, setCart) => {
 };
 
 export const createOrder = (user, cart) => {
-  console.log(user);
-  console.log(user.info);
-  console.log(user.info.email);
-
   if (
     localStorage.getItem("orders") &&
     JSON.parse(localStorage.getItem("orders")).length > 0

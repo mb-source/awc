@@ -8,6 +8,7 @@ import {
   Select,
   Modal,
   Button,
+  message,
 } from "antd";
 import { useState } from "react";
 import styles from "./userhomepage.module.scss";
@@ -25,6 +26,9 @@ export default function UserHomePage() {
   const [films, setfilm] = useState([]);
   const [show, setShow] = useState(false);
   const [cart, setCart] = useState();
+  const [sellPrice, setSellPrice] = useState();
+  const [rentPrice, setRentPrice] = useState();
+  const [vendor, setVendor] = useState();
 
   async function search(nameKey) {
     if (nameKey.length > 0) {
@@ -58,15 +62,26 @@ export default function UserHomePage() {
     // }
   }
 
-  // function acquista(item) {
-  //   addToCart(item.value, item.title, 0, ,
-  //     price,)
+  function buyMovie(id, title) {
+    console.log(sellPrice);
+    if (!sellPrice) {
+      return message.error("Seleziona prima un negozio da cui acquistare");
+    } else {
+      addToCart(setCart, id, title, 0, "Negozio", sellPrice);
+      setSellPrice(undefined);
+      console.log("Ok");
+    }
+  }
 
-  // }
-
-  // function noleggia() {
-
-  // }
+  function rentMovie(id, title) {
+    console.log(rentPrice);
+    if (!rentPrice) {
+      return message.error("Seleziona prima un negozio da cui noleggiare");
+    } else {
+      addToCart(setCart, id, title, 1, "Negozio", rentPrice);
+      setRentPrice(undefined);
+    }
+  }
 
   const opt = films.map((item) => {
     return (
@@ -114,33 +129,68 @@ export default function UserHomePage() {
                   {getMoviePrices(item.value) && (
                     <Row justify="space-between">
                       <Col md={12}>
-                        <h3>Noleggia</h3>
+                        <h3>Acquista</h3>
                       </Col>
                       <Col md={12}>
-                        <h3>Acquista</h3>
+                        <h3>Noleggia</h3>
                       </Col>
                     </Row>
                   )}
                   {getMoviePrices(item.value)[0] && (
                     <div>
-                      <Select>
-                        {getMoviePrices(item.value)[0].vendors.map((vendor) => {
-                          return (
-                            <>
-                              <Option>{vendor.sellPrice}</Option>
-                            </>
-                          );
-                        })}
-                      </Select>
-                      <Select>
-                        {getMoviePrices(item.value)[0].vendors.map((vendor) => {
-                          return (
-                            <>
-                              <Option>{vendor.rentPrice}</Option>
-                            </>
-                          );
-                        })}
-                      </Select>
+                      <Row justify="space-between">
+                        <Col md={12}>
+                          <Select
+                            style={{ width: 100 }}
+                            onChange={(value) => setSellPrice(value)}
+                          >
+                            {getMoviePrices(item.value)[0].vendors.map(
+                              (vendor) => {
+                                return (
+                                  <>
+                                    <Option value={vendor.sellPrice}>
+                                      {`${vendor.sellPrice} - ${vendor.businessName}`}
+                                    </Option>
+                                  </>
+                                );
+                              }
+                            )}
+                          </Select>
+                        </Col>
+
+                        <Col md={12}>
+                          <Select
+                            style={{ width: 100 }}
+                            onChange={(value) => setRentPrice(value)}
+                          >
+                            {getMoviePrices(item.value)[0].vendors.map(
+                              (vendor) => {
+                                return (
+                                  <>
+                                    <Option value={vendor.rentPrice}>
+                                      {`${vendor.rentPrice} - ${vendor.businessName}`}
+                                    </Option>
+                                  </>
+                                );
+                              }
+                            )}
+                          </Select>
+                        </Col>
+                        <Col md={24}>
+                          <Button
+                            type="primary"
+                            onClick={() => buyMovie(item.value, item.title)}
+                          >
+                            Acquista
+                          </Button>
+                          <Button
+                            type="primary"
+                            onClick={() => rentMovie(item.value, item.title)}
+                          >
+                            Noleggia per 72 ore
+                          </Button>
+                        </Col>
+                      </Row>
                     </div>
                   )}
                 </>
@@ -188,13 +238,13 @@ export default function UserHomePage() {
 
       <Content className={styles.content}>
         <div>
-          <Card
+          {/* <Card
             hoverable
             style={{ width: 240 }}
             cover={<img src={getPoster(item.poster, 200)} />}
           >
             <Meta title="Europe Street beat" description="www.instagram.com" />
-          </Card>
+          </Card> */}
         </div>
       </Content>
     </Layout>
