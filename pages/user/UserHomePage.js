@@ -10,7 +10,8 @@ import {
   message,
   Form,
   Input,
-  Table
+  Table,
+  Tag,
 } from "antd";
 import { useState, useEffect } from "react";
 import styles from "./userhomepage.module.scss";
@@ -21,7 +22,7 @@ import {
   getTopFourDirAct,
   getPoster,
   getMoviesByGenre,
-  getMovieInfo
+  getMovieInfo,
 } from "../logic/Api";
 import genres from "../logic/utilities";
 import {
@@ -29,6 +30,7 @@ import {
   createOrder,
   getOrders,
   completeOrder,
+  getLocalOrders,
 } from "../logic/movieslogic";
 
 const { Option } = Select;
@@ -40,10 +42,9 @@ export default function UserHomePage() {
   const [loading, setLoading] = useState(true);
   const [films, setfilm] = useState([]);
   const [movies, setMovies] = useState([]);
-  const [visible, setVisible] = useState(false);
-  const[ModalVisible,setIsModalVisible] = useState(false);
+  const [ModalVisible, setIsModalVisible] = useState(false);
   const [current, setCurrent] = useState(0);
-  const[orders, setOrders] = useState([])
+  const [orders, setOrders] = useState([]);
   const handleCancel = () => {
     setIsModalVisible(false);
   };
@@ -55,9 +56,21 @@ export default function UserHomePage() {
       key: "title",
       render: (text) => <a>{text}</a>,
     },
-  ]
-
-
+    {
+      title: "Termine noleggio",
+      dataIndex: "date",
+      key: "date",
+      render: (text, row) => (
+        <a>
+          {row.type === 1
+            ? new Date(
+                new Date(text).getTime() + 3 * 24 * 60 * 60 * 1000
+              ).toLocaleDateString()
+            : "---"}
+        </a>
+      ),
+    },
+  ];
 
   useEffect(async () => {
     const localUser = localStorage.getItem("user");
@@ -66,13 +79,21 @@ export default function UserHomePage() {
       setUser(u);
       const res = await getMoviesByGenre(u.info.genere);
       setMovies(res.results);
-      //setOrders(await orderList(u))
+      const o = getLocalOrders(u.info.email);
+      const x = [];
+      for (const i in o) {
+        console.log(o[i].movie);
+        const y = await getMovieInfo(o[i].movie);
+        console.log(y);
+        x.push({ ...y, date: o[i].date, type: o[i].type });
+      }
+      console.log(x);
+      setOrders(x);
       setLoading(false);
     } else {
       window.location.href = "/login";
     }
   }, []);
- 
 
   async function search(nameKey) {
     if (nameKey.length > 0) {
@@ -114,19 +135,6 @@ export default function UserHomePage() {
     completeOrder();
     message.success("Acquisto completato!");
   }
-
-
-  // const orderList = async(u) => {
-  //   const ids = getOrders();
-  //   const o = [];
-  //     const movie = await getMovieInfo(ids[movie]);
-  //     const final = {
-  //       ...movie,
-  //     };
-  //     o.push(final);
-  //   return o;
-  // };
-  
 
   const opt = films.map((item) => {
     return (
@@ -238,16 +246,16 @@ export default function UserHomePage() {
                         </Col>
                         <Col md={12}>
                           <Button
-                            style={{margin: 10}}
+                            style={{ margin: 10 }}
                             type="primary"
                             onClick={() => buyMovie(item.value, buy, vendor)}
                           >
                             Acquista
                           </Button>
-                          </Col>
-                          <Col md={12}>
+                        </Col>
+                        <Col md={12}>
                           <Button
-                          style={{margin: 8}}
+                            style={{ margin: 8 }}
                             type="primary"
                             onClick={() => {
                               rentMovie(item.value, rent, vendor);
@@ -298,17 +306,16 @@ export default function UserHomePage() {
       </Header>
 
       <Content className={styles.content}>
-      <div className={styles.div}>
+        <div className={styles.div}>
           <h3>I miei film</h3>
           <Table
             className={styles.table}
             label="films"
-            dataSource={[...orders]}
+            dataSource={orders}
             columns={columns}
             size="middle"
           />
         </div>
-
 
         <h2>Consigli basati sul tuo genere preferito...</h2>
         <Row>
@@ -338,53 +345,53 @@ export default function UserHomePage() {
         </Row>
       </Content>
 
-      <Modal visible={ModalVisible}
-      maskClosable={true}
-      closable={true}
-      okText="Acquista"
-      cancelText="Annulla"
-      onCancel={() => handleCancel()}
-      onOk={() => order()}>
-
+      <Modal
+        visible={ModalVisible}
+        maskClosable={true}
+        closable={true}
+        okText="Acquista"
+        cancelText="Annulla"
+        onCancel={() => handleCancel()}
+        onOk={() => order()}
+      >
         <div className={styles.stepscontent}>
           <Row>
-          {!loading && (
-            <Form
-              layout="vertical"
-              initialValues={{
-                carta: user.info.pagamento,
-                data: user.info.dataS,
-                cvv: user.info.cvv,
-                nominativo: user.info.nominativo,
-              }}
-            >
-              <h3> Modalità di pagamento </h3>
-              <Col>
-                <Form.Item label="Nominativo" name="nominativo">
-                  <Input disabled></Input>
-                </Form.Item>
-              </Col>
-              <Col>
-                <Form.Item label="Data di scadenza" name="data">
-                  <Input disabled></Input>
-                </Form.Item>
-              </Col>
-              <Col>
-                <Form.Item label="Numero della carta" name="carta">
-                  <Input disabled></Input>
-                </Form.Item>
-              </Col>
-              <Col>
-                <Form.Item label="Cvv" name="cvv">
-                  <Input disabled></Input>
-                </Form.Item>
-              </Col>
-            </Form>
-          )}
-         </Row>
+            {!loading && (
+              <Form
+                layout="vertical"
+                initialValues={{
+                  carta: user.info.number,
+                  data: user.info.data,
+                  cvv: user.info.cvv,
+                  nominativo: user.info.id,
+                }}
+              >
+                <h3> Modalità di pagamento </h3>
+                <Col>
+                  <Form.Item label="Nominativo" name="id">
+                    <Input></Input>
+                  </Form.Item>
+                </Col>
+                <Col>
+                  <Form.Item label="Data di scadenza" name="data">
+                    <Input></Input>
+                  </Form.Item>
+                </Col>
+                <Col>
+                  <Form.Item label="Numero della carta" name="numero">
+                    <Input></Input>
+                  </Form.Item>
+                </Col>
+                <Col>
+                  <Form.Item label="Cvv" name="cvv">
+                    <Input></Input>
+                  </Form.Item>
+                </Col>
+              </Form>
+            )}
+          </Row>
         </div>
       </Modal>
     </Layout>
   );
 }
-
