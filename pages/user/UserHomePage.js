@@ -63,19 +63,19 @@ export default function UserHomePage() {
     }
   }
 
-  function buyMovie(id, buy) {
+  function buyMovie(id, buy, vendor) {
     if (!buy) {
       return message.error("Seleziona prima un negozio da cui acquistare");
     } else {
-      createOrder(user.info.email, "Negozio", id, buy, 0);
+      createOrder(user.info.email, vendor, id, buy, 0);
     }
   }
 
-  function rentMovie(id, rent) {
+  function rentMovie(id, rent, vendor) {
     if (!rent) {
       return message.error("Seleziona prima un negozio da cui noleggiare");
     } else {
-      createOrder(user.info.email, "Negozio", id, rent, 1);
+      createOrder(user.info.email, vendor, id, rent, 1);
     }
   }
 
@@ -142,16 +142,17 @@ export default function UserHomePage() {
                           <Select
                             style={{ width: 100 }}
                             onSelect={(value) => {
-                              buy = value.split("-")[0];
-                              vendor = value.split("-")[1];
-                              console.log(value);
+                              buy = value.split(" - ")[0];
+                              vendor = value.split(" - ")[1];
                             }}
                           >
                             {getMoviePrices(item.value)[0].vendors.map(
                               (vendor) => {
                                 return (
                                   <>
-                                    <Option value={vendor.sellPrice}>
+                                    <Option
+                                      value={`${vendor.sellPrice} - ${vendor.businessName}`}
+                                    >
                                       {`${vendor.sellPrice} - ${vendor.businessName}`}
                                     </Option>
                                   </>
@@ -165,7 +166,8 @@ export default function UserHomePage() {
                           <Select
                             style={{ width: 100 }}
                             onSelect={(value) => {
-                              rent = value;
+                              rent = value.split(" - ")[0];
+                              vendor = value.split(" - ")[1];
                             }}
                           >
                             {getMoviePrices(item.value)[0].vendors.map(
@@ -186,17 +188,15 @@ export default function UserHomePage() {
                         <Col md={24}>
                           <Button
                             type="primary"
-                            onClick={() =>
-                              buyMovie(item.value, item.title, buy)
-                            }
+                            onClick={() => buyMovie(item.value, buy, vendor)}
                           >
                             Acquista
                           </Button>
                           <Button
                             type="primary"
-                            onClick={() =>
-                              rentMovie(item.value, item.title, rent)
-                            }
+                            onClick={() => {
+                              rentMovie(item.value, rent, vendor);
+                            }}
                           >
                             Noleggia per 72 ore
                           </Button>

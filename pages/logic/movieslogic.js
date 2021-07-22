@@ -154,10 +154,15 @@ export const createOrder = (user, businessName, movie, price, type) => {
               localStorage.setItem("orders", JSON.stringify(orders));
             } else {
               //Se il noleggio è ancora in corso
-              console.log("Errore");
+              Modal.error({
+                title:
+                  "Hai già noleggiato questo film ed è ancora disponibile per la visione",
+              });
             }
           } else if (order.type === 0) {
-            console.log("Errore");
+            Modal.error({
+              title: "Hai già acquistato questo film",
+            });
           }
         } else {
           var date = new Date(Date.now());
