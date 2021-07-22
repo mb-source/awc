@@ -248,7 +248,7 @@ export default function UserHomePage() {
       </Header>
 
       <Content className={styles.content}>
-        <h2>Dai tuoi generi preferiti</h2>
+        <h2>Consigli basati sul tuo genere preferito...</h2>
 
         <Row>
           {!loading &&

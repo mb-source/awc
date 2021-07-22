@@ -57,7 +57,7 @@ export default function UserPage() {
           style={{ float: "right", marginRight: "-10px" }}
         >
           <Menu.Item key="1">
-            <a href="/UserHomePage">
+            <a href="/user/UserHomePage">
               <HomeOutlined />
             </a>
           </Menu.Item>
@@ -82,6 +82,7 @@ export default function UserPage() {
       <Content
         style={{ textAlign: "center", padding: "50px", marginTop: "60" }}
       >
+        <div className={styles.content}>
         <>
           {!loading && (
             <Form
@@ -124,12 +125,13 @@ export default function UserPage() {
                 password: user.info.password,
                 telefono: user.info.telefono,
                 indirizzo: user.info.indirizzo,
-                numero: user.info.numero,
-                data: user.info.data,
-                id: user.info.id,
+                numero: user.info.pagamento,
+                data: user.info.dataS,
+                id: user.info.nominativo,
                 cvv: user.info.cvv,
               }}
             >
+              <h3 style={{float: "left" }}>I tuoi dati personali</h3> <br/><br/>
               <Form.Item
                 label="Nome"
                 name="nome"
@@ -209,8 +211,9 @@ export default function UserPage() {
               >
                 <Input style={{ width: "100%" }} />
               </Form.Item>
+              <br/><br/>
 
-              <h4>Metodo di Pagamento</h4>
+              <h4 style={{float: "left" }}>Metodo di Pagamento</h4> <br/><br/>
               <Form.Item
                 label="Numero della carta"
                 name="numero"
@@ -221,11 +224,11 @@ export default function UserPage() {
                   },
                 ]}
               >
-                <Input value="numero" style={{ float: "left", width: "60%" }} />
+                <Input />
               </Form.Item>
               <Form.Item
-                name="data"
                 label="Data di scadenza"
+                name="data"
                 rules={[
                   {
                     required: true,
@@ -235,6 +238,7 @@ export default function UserPage() {
               >
                 <Input type="date" />
               </Form.Item>
+
               <Form.Item
                 name="id"
                 label="Nome e Cognome"
@@ -245,8 +249,9 @@ export default function UserPage() {
                   },
                 ]}
               >
-                <Input style={{ width: "60%" }} />
+                <Input />
               </Form.Item>
+
               <Form.Item
                 name="cvv"
                 label="CVV"
@@ -257,7 +262,7 @@ export default function UserPage() {
                   },
                 ]}
               >
-                <Input style={{ width: "60%" }} />
+                <Input />
               </Form.Item>
 
               <Button size="large" htmlType="submit" style={{ margin: 10 }}>
@@ -278,6 +283,7 @@ export default function UserPage() {
             </Form>
           )}
         </>
+        </div>
       </Content>
     </Layout>
   );
