@@ -188,11 +188,11 @@ export const completeOrder = () => {
   const orders = JSON.parse(localStorage.getItem("orders"));
 
   if (orders && orders.length > 0) {
-    orders.push(cart);
+    orders.push(orders);
     localStorage.setItem("orders", JSON.stringify(cart));
     localStorage.removeItem("cart");
   } else {
-    localStorage.setItem("orders", JSON.stringify([cart]));
+    localStorage.setItem("orders", JSON.stringify(cart));
     localStorage.removeItem("cart");
   }
 };

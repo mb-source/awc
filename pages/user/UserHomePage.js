@@ -361,22 +361,22 @@ export default function UserHomePage() {
               <h3> Modalità di pagamento </h3>
               <Col>
                 <Form.Item label="Nominativo" name="nominativo">
-                  <Input></Input>
+                  <Input disabled></Input>
                 </Form.Item>
               </Col>
               <Col>
                 <Form.Item label="Data di scadenza" name="data">
-                  <Input></Input>
+                  <Input disabled></Input>
                 </Form.Item>
               </Col>
               <Col>
                 <Form.Item label="Numero della carta" name="carta">
-                  <Input></Input>
+                  <Input disabled></Input>
                 </Form.Item>
               </Col>
               <Col>
                 <Form.Item label="Cvv" name="cvv">
-                  <Input></Input>
+                  <Input disabled></Input>
                 </Form.Item>
               </Col>
             </Form>
