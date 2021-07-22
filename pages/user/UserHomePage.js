@@ -111,6 +111,8 @@ export default function UserHomePage() {
             var buy;
             var vendor;
             Modal.info({
+              maskClosable: true,
+              closable: true,
               title: item.filmTitle,
               icon: <></>,
               content: (
@@ -185,20 +187,24 @@ export default function UserHomePage() {
                             )}
                           </Select>
                         </Col>
-                        <Col md={24}>
+                        <Col md={12}>
                           <Button
+                            style={{margin: 10}}
                             type="primary"
                             onClick={() => buyMovie(item.value, buy, vendor)}
                           >
                             Acquista
                           </Button>
+                          </Col>
+                          <Col md={12}>
                           <Button
+                          style={{margin: 8}}
                             type="primary"
                             onClick={() => {
                               rentMovie(item.value, rent, vendor);
                             }}
                           >
-                            Noleggia per 72 ore
+                            Noleggia 72h
                           </Button>
                         </Col>
                       </Row>

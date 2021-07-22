@@ -63,6 +63,7 @@ export default function UserPage() {
       <Content
         style={{ textAlign: "center", padding: "50px", marginTop: "60" }}
       >
+        <div className={styles.content}>
         <>
           {!loading && (
             <Form
@@ -103,6 +104,7 @@ export default function UserPage() {
                 vatNumber: user.info.vatNumber,
               }}
             >
+              <h3 style={{float: "left" }}>I tuoi dati personali</h3> <br/><br/>
               <Form.Item
                 label="Nome del Negozio"
                 name="businessName"
@@ -210,6 +212,7 @@ export default function UserPage() {
             </Form>
           )}
         </>
+        </div>
       </Content>
     </Layout>
   );
