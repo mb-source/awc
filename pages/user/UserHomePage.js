@@ -42,20 +42,7 @@ export default function UserHomePage() {
     } else {
       setfilm([]);
     }
-    // for (var i = 0; i < myArray.length; i++) {
-    //   if (String(myArray[i].title) === String(nameKey) && stato === 1) {
-    //     console.log(myArray[i]);
-    //     return myArray[i];
-    //   }
-    //   if (String(myArray[i].title) === String(nameKey)  && stato === 2) {
-    //     console.log(myArray[i]);
-    //     return myArray[i].title;
-    //   }
-    //   if (String(myArray[i].title) === String(nameKey)  && stato === 3) {
-    //     console.log(myArray[i]);
-    //     return myArray[i].genre;
-    //   }
-    // }
+
   }
 
   // function acquista(item) {
@@ -169,7 +156,7 @@ export default function UserHomePage() {
             </a>
           </Menu.Item>
           <Menu.Item key="2">
-            <a href="/Shop">
+            <a href="/user/Shop">
               <ShoppingOutlined />
             </a>
           </Menu.Item>
@@ -188,13 +175,13 @@ export default function UserHomePage() {
 
       <Content className={styles.content}>
         <div>
-          <Card
+          {/* <Card
             hoverable
             style={{ width: 240 }}
             cover={<img src={getPoster(item.poster, 200)} />}
           >
             <Meta title="Europe Street beat" description="www.instagram.com" />
-          </Card>
+          </Card> */}
         </div>
       </Content>
     </Layout>
