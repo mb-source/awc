@@ -28,8 +28,20 @@
     text-align: center;
   }
 
-  .card {
+  .step {
     display: flex;
     flex-direction: row;
+    float: right
+  }
+
+  .stepscontent {
+    min-height: 200px;
+    margin: 16px;
+    padding-top: 20px;
+    text-align: center;
+  }
+  
+  .stepsaction {
+    margin-top: 24px;
   }
 }

@@ -49,7 +49,7 @@ export default function UserPage() {
             </a>
           </Menu.Item>
           <Menu.Item key="2">
-            <a href="/Shop">
+            <a href="/user/Shop">
               <ShoppingOutlined />
             </a>
           </Menu.Item>
@@ -89,7 +89,7 @@ export default function UserPage() {
                       numero: data.numero,
                       data: data.data,
                       id: data.id,
-                      cvs: data.cvs
+                      cvv: data.cvv
                     };
                   } else {
                     return item;
@@ -114,7 +114,7 @@ export default function UserPage() {
                 numero: user.info.numero,
                 data: user.info.data,
                 id: user.info.id,
-                cvs: user.info.cvs
+                cvv: user.info.cvv
               }}
             >
               <Form.Item
@@ -209,9 +209,9 @@ export default function UserPage() {
             ]}
           >
             <Input id="numero" placeholder="Numero della carta" style={{ width: "60%" }}/>
-            <Input type="date" id="data"  style={{ width: "30%" }} />
+            <Input type="date" id="Data"  style={{ width: "30%" }} />
             <Input id="id" placeholder="Nome e Cognome" style={{ width: "60%" }}/>
-            <Input id="cvs" placeholder="CVS" style={{ width: "30%" }} />
+            <Input id="cvv" placeholder="CVV" style={{ width: "30%" }} />
             
           </Form.Item>
 

@@ -177,7 +177,7 @@ export const User = () => {
               },
             ]}
           >
-            <Input id="cvs" placeholder="CVS" style={{float: "left",  width: "30%" }} />
+            <Input id="cvv" placeholder="CVV" style={{float: "left",  width: "30%" }} />
           </Form.Item>
 
           <Form.Item name="genere">

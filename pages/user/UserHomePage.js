@@ -230,7 +230,7 @@ export default function UserHomePage() {
             </a>
           </Menu.Item>
           <Menu.Item key="2">
-            <a href="/Shop">
+            <a href="/user/Shop">
               <ShoppingOutlined />
             </a>
           </Menu.Item>
