@@ -221,7 +221,7 @@ export default function UserPage() {
                   },
                 ]}
               >
-                <Input value="numero" style={{float: "left",  width: "60%" }}/>
+                <Input value="numero" style={{ float: "left", width: "60%" }} />
               </Form.Item>
               <Form.Item
                 name="data"
@@ -233,7 +233,7 @@ export default function UserPage() {
                   },
                 ]}
               >
-                <Input type="date"/>
+                <Input type="date" />
               </Form.Item>
               <Form.Item
                 name="id"

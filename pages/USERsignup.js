@@ -21,8 +21,6 @@ export const User = () => {
     console.log(stato);
   }, [stato]);
 
-  
-
   return (
     <Content style={{ textAlign: "center", padding: "50px", marginTop: "60" }}>
       <>
@@ -32,8 +30,7 @@ export const User = () => {
             prefix: "39",
           }}
           onFinish={(data) => {
-            data = {...data, genere:stato}
-            console.log(data);
+            data = { ...data, genere: stato };
             let privateUser = localStorage.getItem("privateUser")
               ? JSON.parse(localStorage.getItem("privateUser"))
               : [];
@@ -127,7 +124,6 @@ export const User = () => {
             <Input style={{ width: "100%" }} />
           </Form.Item>
 
-          
           <Form.Item
             label="Metodo di Pagamento"
             name="pagamento"
@@ -138,10 +134,14 @@ export const User = () => {
               },
             ]}
           >
-            <Input id="numero" placeholder="Numero della carta" style={{float: "left",  width: "60%" }}/>
+            <Input
+              id="numero"
+              placeholder="Numero della carta"
+              style={{ float: "left", width: "60%" }}
+            />
           </Form.Item>
-          
-            <Form.Item
+
+          <Form.Item
             label="Data di scadenza"
             name="dataS"
             rules={[
@@ -151,7 +151,11 @@ export const User = () => {
               },
             ]}
           >
-            <Input type="date" id="data"  style={{ float: "left" , width: "30%" }} />
+            <Input
+              type="date"
+              id="data"
+              style={{ float: "left", width: "30%" }}
+            />
           </Form.Item>
 
           <Form.Item
@@ -164,7 +168,11 @@ export const User = () => {
               },
             ]}
           >
-            <Input id="id" placeholder="Nome e Cognome" style={{float: "left" , width: "60%" }}/>
+            <Input
+              id="id"
+              placeholder="Nome e Cognome"
+              style={{ float: "left", width: "60%" }}
+            />
           </Form.Item>
 
           <Form.Item
@@ -177,7 +185,11 @@ export const User = () => {
               },
             ]}
           >
-            <Input id="cvv" placeholder="CVV" style={{float: "left",  width: "30%" }} />
+            <Input
+              id="cvv"
+              placeholder="CVV"
+              style={{ float: "left", width: "30%" }}
+            />
           </Form.Item>
 
           <Form.Item name="genere">

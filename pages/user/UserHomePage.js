@@ -45,23 +45,6 @@ export default function UserHomePage() {
     }
   }, []);
 
-
-  function buyMovie(id, title, buy) {
-    if (!buy) {
-      return message.error("Seleziona prima un negozio da cui acquistare");
-    } else {
-      createOrder(user.info.email, "Negozio", id, buy, 0);
-      console.log("Ok");
-    }
-  }
-
-  function rentMovie(id, title, rent) {
-    if (!rent) {
-      return message.error("Seleziona prima un negozio da cui noleggiare");
-    } else {
-    }
-  }
-
   async function search(nameKey) {
     if (nameKey.length > 0) {
       const res = await getMovieList(nameKey);
@@ -80,6 +63,22 @@ export default function UserHomePage() {
     }
   }
 
+  function buyMovie(id, buy) {
+    if (!buy) {
+      return message.error("Seleziona prima un negozio da cui acquistare");
+    } else {
+      createOrder(user.info.email, "Negozio", id, buy, 0);
+    }
+  }
+
+  function rentMovie(id, rent) {
+    if (!rent) {
+      return message.error("Seleziona prima un negozio da cui noleggiare");
+    } else {
+      createOrder(user.info.email, "Negozio", id, rent, 1);
+    }
+  }
+
   const opt = films.map((item) => {
     return (
       <Option
@@ -93,7 +92,7 @@ export default function UserHomePage() {
       </Option>
     );
   });
-  
+
   return (
     <Layout className={styles.layout}>
       <Header style={{ padding: "0 !important", backgroundColor: "white" }}>
@@ -256,22 +255,22 @@ export default function UserHomePage() {
             movies.map((movie) => {
               return (
                 <Row span={2}>
-                <Col justify="space-around" md={4}>
-                  <Card
-                    style={{ width: 240 }}
-                    cover={
-                      <img
-                        alt="poster"
-                        src={getPoster(movie.poster_path, 200)}
+                  <Col justify="space-around" md={4}>
+                    <Card
+                      style={{ width: 240 }}
+                      cover={
+                        <img
+                          alt="poster"
+                          src={getPoster(movie.poster_path, 200)}
+                        />
+                      }
+                    >
+                      <Meta
+                        title={movie.title}
+                        description={`${movie.overview.slice(0, 100)}...`}
                       />
-                    }
-                  >
-                    <Meta
-                      title={movie.title}
-                      description={`${movie.overview.slice(0, 100)}...`}
-                    />
-                  </Card>
-                </Col>
+                    </Card>
+                  </Col>
                 </Row>
               );
             })}
