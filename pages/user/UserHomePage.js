@@ -1,6 +1,5 @@
 import {
   Card,
-  Input,
   Row,
   Col,
   Layout,
@@ -21,7 +20,7 @@ import {
   getMoviesByGenre,
 } from "../logic/Api";
 import genres from "../logic/utilities";
-import { getMoviePrices } from "../logic/movieslogic";
+import { getMoviePrices, createOrder } from "../logic/movieslogic";
 
 const { Option } = Select;
 const { Meta } = Card;
@@ -31,8 +30,6 @@ export default function UserHomePage() {
   const [user, setUser] = useState();
   const [loading, setLoading] = useState(true);
   const [films, setfilm] = useState([]);
-  const [show, setShow] = useState(false);
-  const [cart, setCart] = useState([]);
   const [movies, setMovies] = useState([]);
 
   useEffect(async () => {
@@ -70,6 +67,8 @@ export default function UserHomePage() {
     if (!buy) {
       return message.error("Seleziona prima un negozio da cui acquistare");
     } else {
+      createOrder(user.info.email, "Negozio", id, buy, 0);
+      console.log("Ok");
     }
   }
 
